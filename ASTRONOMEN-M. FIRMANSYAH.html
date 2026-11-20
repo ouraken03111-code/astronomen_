@@ -1,0 +1,3337 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#101014" />
+  <title>ASTRONOMEN — The Architecture of Name &amp; Stars</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #101014;
+      --bg-elev: #15151b;
+      --panel: #19191f;
+      --panel2: #202028;
+      --panel3: #262630;
+      --line: #32323d;
+      --line-soft: rgba(255, 255, 255, 0.08);
+      --text: #f4f1eb;
+      --muted: #a6a19a;
+      --muted-dim: #7c7873;
+      --gold: #d8b878;
+      --gold-light: #ecd49f;
+      --gold-dim: rgba(216, 184, 120, 0.16);
+      --gold-border: rgba(216, 184, 120, 0.35);
+      --crimson: #d97a7a;
+      --azure: #7ea8d9;
+      --emerald: #7ec49c;
+      --violet: #a78bd6;
+      --serif: 'Cormorant Garamond', Georgia, serif;
+      --sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background:
+        radial-gradient(circle at 85% 0%, rgba(142, 122, 171, 0.14) 0%, transparent 38%),
+        radial-gradient(circle at 12% 18%, rgba(216, 184, 120, 0.08) 0%, transparent 42%),
+        var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      line-height: 1.65;
+      min-height: 100vh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .wrap {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Header & Navigation */
+    .topbar {
+      border-bottom: 1px solid var(--line-soft);
+      background: rgba(16, 16, 20, 0.86);
+      backdrop-filter: blur(14px);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+    }
+
+    .nav {
+      min-height: 78px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 12px 0;
+    }
+
+    .brand-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand {
+      font-family: var(--sans);
+      font-size: 19px;
+      letter-spacing: 0.28em;
+      font-weight: 700;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .brand span {
+      color: var(--gold);
+    }
+
+    .brand-sub {
+      font-size: 9.5px;
+      letter-spacing: 0.22em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+
+    .nav-meta {
+      text-align: right;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .creator-badge {
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border: 1px solid var(--line);
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(25, 25, 31, 0.7);
+    }
+
+    .creator-badge strong {
+      color: var(--gold);
+      font-weight: 600;
+    }
+
+    /* Hero Section */
+    .hero {
+      padding: 64px 0 40px;
+      text-align: center;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--gold);
+      font-size: 11px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .eyebrow::before,
+    .eyebrow::after {
+      content: "";
+      width: 28px;
+      height: 1px;
+      background: var(--gold-border);
+    }
+
+    .hero h1 {
+      font-family: var(--serif);
+      font-size: clamp(44px, 7.5vw, 84px);
+      font-weight: 400;
+      line-height: 0.98;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+    }
+
+    .hero h1 em {
+      color: var(--gold);
+      font-style: italic;
+    }
+
+    .hero-tagline {
+      font-size: 12px;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      color: var(--gold-light);
+      margin-bottom: 12px;
+      font-weight: 500;
+    }
+
+    .hero p {
+      max-width: 680px;
+      margin: 0 auto 14px;
+      color: var(--muted);
+      font-size: 15.5px;
+      font-weight: 300;
+    }
+
+    .hero-credit {
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted-dim);
+      margin-top: 10px;
+    }
+
+    .hero-credit span {
+      color: var(--gold);
+      font-weight: 600;
+    }
+
+    /* Calculator Form Card */
+    .form-card {
+      max-width: 960px;
+      margin: 34px auto 0;
+      background: linear-gradient(155deg, #212129 0%, #16161c 100%);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 32px;
+      text-align: left;
+      box-shadow: 0 28px 80px rgba(0, 0, 0, 0.55);
+      position: relative;
+    }
+
+    .form-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 22px;
+      padding: 1px;
+      background: linear-gradient(135deg, rgba(216, 184, 120, 0.35), transparent 45%, rgba(216, 184, 120, 0.15));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    .form-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      padding-bottom: 18px;
+      margin-bottom: 22px;
+      border-bottom: 1px solid var(--line-soft);
+    }
+
+    .form-header h2 {
+      font-family: var(--serif);
+      font-size: 26px;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .preset-group {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn-ghost {
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--gold-light);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 7px 14px;
+      font-size: 11.5px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--gold);
+      background: var(--gold-dim);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 16px;
+    }
+
+    .col-6 { grid-column: span 6; }
+    .col-4 { grid-column: span 4; }
+    .col-3 { grid-column: span 3; }
+    .col-8 { grid-column: span 8; }
+    .col-12 { grid-column: span 12; }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      position: relative;
+    }
+
+    .field label {
+      font-size: 11px;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .field input,
+    .field select {
+      width: 100%;
+      background: #101015;
+      color: var(--text);
+      border: 1px solid #3c3c48;
+      border-radius: 12px;
+      padding: 13px 15px;
+      font-size: 14.5px;
+      font-family: var(--sans);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .field input:focus,
+    .field select:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(216, 184, 120, 0.14);
+    }
+
+    .city-suggestions {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      margin-top: 6px;
+      background: #1a1a22;
+      border: 1px solid var(--gold-border);
+      border-radius: 12px;
+      max-height: 230px;
+      overflow-y: auto;
+      z-index: 50;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.7);
+      display: none;
+    }
+
+    .city-suggestions.active {
+      display: block;
+    }
+
+    .city-item {
+      padding: 11px 14px;
+      cursor: pointer;
+      border-bottom: 1px solid var(--line-soft);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      font-size: 13.5px;
+    }
+
+    .city-item:last-child {
+      border-bottom: none;
+    }
+
+    .city-item:hover {
+      background: var(--panel3);
+    }
+
+    .city-item small {
+      color: var(--gold);
+      font-size: 11px;
+      white-space: nowrap;
+    }
+
+    .coord-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 14px;
+      padding: 12px 16px;
+      background: rgba(16, 16, 21, 0.75);
+      border: 1px solid var(--line-soft);
+      border-radius: 12px;
+      font-size: 12.5px;
+      color: var(--muted);
+    }
+
+    .coord-values {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .coord-pill {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .coord-pill span {
+      color: var(--gold);
+    }
+
+    .advanced-toggle {
+      background: none;
+      border: none;
+      color: var(--gold);
+      font-size: 12px;
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .advanced-panel {
+      display: none;
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px dashed var(--line);
+    }
+
+    .advanced-panel.open {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    .form-actions {
+      margin-top: 24px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #e5c687 0%, #c8a258 100%);
+      color: #14110c;
+      border: none;
+      border-radius: 13px;
+      padding: 15px 30px;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s, filter 0.2s;
+      box-shadow: 0 10px 30px rgba(216, 184, 120, 0.22);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.06);
+      box-shadow: 0 14px 36px rgba(216, 184, 120, 0.32);
+    }
+
+    .btn-secondary {
+      background: var(--panel2);
+      color: var(--text);
+      border: 1px solid var(--gold-border);
+      border-radius: 12px;
+      padding: 12px 20px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .btn-secondary:hover {
+      background: var(--gold-dim);
+      border-color: var(--gold);
+    }
+
+    .status-msg {
+      font-size: 13px;
+      color: var(--gold-light);
+      min-height: 20px;
+    }
+
+    .status-msg.error {
+      color: var(--crimson);
+    }
+
+    /* Results Container */
+    main {
+      padding-bottom: 90px;
+    }
+
+    .result-shell {
+      display: none;
+      margin-top: 48px;
+      animation: fadeUp 0.55s ease;
+    }
+
+    .result-shell.visible {
+      display: block;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .result-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 14px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 20px 24px;
+      margin-bottom: 18px;
+    }
+
+    /* Quick Section Navigation Pills */
+    .quick-nav {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 10px 14px;
+      background: rgba(21, 21, 27, 0.92);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      margin-bottom: 24px;
+      position: sticky;
+      top: 86px;
+      z-index: 30;
+      backdrop-filter: blur(12px);
+      scrollbar-width: none;
+    }
+
+    .quick-nav::-webkit-scrollbar {
+      display: none;
+    }
+
+    .qnav-link {
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 500;
+      padding: 7px 13px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+
+    .qnav-link:hover {
+      color: var(--gold-light);
+      background: var(--gold-dim);
+      border-color: var(--gold-border);
+    }
+
+    /* Executive Summary Strip */
+    .exec-banner {
+      background: linear-gradient(135deg, rgba(216, 184, 120, 0.12) 0%, rgba(25, 25, 31, 0.95) 100%);
+      border: 1px solid var(--gold-border);
+      border-radius: 18px;
+      padding: 22px 26px;
+      margin-bottom: 24px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .exec-item small {
+      display: block;
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+
+    .exec-item strong {
+      font-family: var(--serif);
+      font-size: 21px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.2;
+      display: block;
+    }
+
+    .exec-item span {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* Info Note Callout */
+    .info-callout {
+      background: rgba(16, 16, 21, 0.72);
+      border: 1px solid var(--line-soft);
+      border-left: 3px solid var(--gold);
+      border-radius: 0 12px 12px 0;
+      padding: 12px 16px;
+      margin-top: 14px;
+      font-size: 12.5px;
+      color: #cfc9c0;
+      line-height: 1.6;
+    }
+
+    .info-callout strong {
+      color: var(--gold-light);
+    }
+
+    .subject-summary h2 {
+      font-family: var(--serif);
+      font-size: 30px;
+      font-weight: 500;
+      line-height: 1.2;
+    }
+
+    .subject-summary p {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    /* Big Three Cards */
+    .big-three-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+
+    .triad-card {
+      background: linear-gradient(160deg, var(--panel) 0%, #141419 100%);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .triad-card::after {
+      content: attr(data-glyph);
+      position: absolute;
+      right: 16px;
+      bottom: -14px;
+      font-family: var(--serif);
+      font-size: 112px;
+      color: rgba(216, 184, 120, 0.07);
+      pointer-events: none;
+      line-height: 1;
+    }
+
+    .triad-role {
+      font-size: 10.5px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 600;
+    }
+
+    .triad-title {
+      font-family: var(--serif);
+      font-size: 34px;
+      font-weight: 500;
+      margin: 6px 0 4px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .triad-deg {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    .triad-desc {
+      font-size: 13.5px;
+      color: #ccc7bf;
+    }
+
+    /* Editorial Sections */
+    .ed-section {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 34px;
+      margin-bottom: 26px;
+      scroll-margin-top: 145px;
+    }
+
+    .sec-header {
+      border-bottom: 1px solid var(--line-soft);
+      padding-bottom: 18px;
+      margin-bottom: 24px;
+    }
+
+    .sec-kicker {
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
+    .ed-section h3 {
+      font-family: var(--serif);
+      font-size: 32px;
+      font-weight: 500;
+      margin-bottom: 8px;
+      line-height: 1.18;
+    }
+
+    .sec-lead {
+      color: #bdb8b0;
+      font-size: 14.5px;
+      line-height: 1.7;
+      margin-bottom: 0;
+      max-width: 820px;
+    }
+
+    /* Wheel & Ephemeris Split */
+    .chart-layout {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 26px;
+      align-items: start;
+    }
+
+    .wheel-box {
+      background: #121217;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .wheel-box svg {
+      width: 100%;
+      max-width: 500px;
+      height: auto;
+      display: block;
+    }
+
+    .wheel-legend {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 14px;
+      margin-top: 12px;
+      font-size: 11.5px;
+      color: var(--muted);
+    }
+
+    .legend-dot {
+      display: inline-block;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      margin-right: 5px;
+    }
+
+    .wheel-tooltip {
+      margin-top: 10px;
+      min-height: 38px;
+      width: 100%;
+      background: var(--panel2);
+      border: 1px solid var(--line-soft);
+      border-radius: 10px;
+      padding: 9px 14px;
+      font-size: 12.5px;
+      color: var(--gold-light);
+      text-align: center;
+    }
+
+    /* Tables */
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #14141a;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      text-align: left;
+    }
+
+    th {
+      background: #1b1b23;
+      color: var(--gold);
+      font-size: 10.5px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+      font-weight: 600;
+    }
+
+    td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--line-soft);
+      color: #dedad2;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .rx-badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--crimson);
+      border: 1px solid rgba(217, 122, 122, 0.4);
+      border-radius: 4px;
+      padding: 1px 5px;
+      margin-left: 5px;
+    }
+
+    /* Houses Grid */
+    .houses-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    .house-card {
+      background: var(--panel2);
+      border: 1px solid var(--line-soft);
+      border-radius: 13px;
+      padding: 14px 16px;
+    }
+
+    .house-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+
+    .house-num {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      color: var(--gold);
+      text-transform: uppercase;
+    }
+
+    .house-sign {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .house-theme {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .house-occupants {
+      margin-top: 7px;
+      font-size: 11.5px;
+      color: var(--gold-light);
+    }
+
+    /* Balance Bars (Elements, Modalities, Dominance) */
+    .balance-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .balance-box {
+      background: var(--panel2);
+      border: 1px solid var(--line-soft);
+      border-radius: 15px;
+      padding: 20px;
+    }
+
+    .balance-box h4 {
+      font-family: var(--serif);
+      font-size: 21px;
+      font-weight: 500;
+      margin-bottom: 14px;
+      color: var(--gold-light);
+    }
+
+    .bar-row {
+      margin-bottom: 12px;
+    }
+
+    .bar-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .bar-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12.5px;
+      margin-bottom: 5px;
+    }
+
+    .bar-track {
+      height: 7px;
+      background: #101015;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #b8944c, #ecd49f);
+      border-radius: 999px;
+    }
+
+    .dom-stat {
+      padding: 10px 0;
+      border-bottom: 1px solid var(--line-soft);
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 13px;
+    }
+
+    .dom-stat:last-child {
+      border-bottom: none;
+    }
+
+    .dom-stat span {
+      color: var(--muted);
+    }
+
+    .dom-stat strong {
+      color: var(--text);
+      text-align: right;
+    }
+
+    /* Aspects Grid */
+    .aspects-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    .aspect-card {
+      background: var(--panel2);
+      border: 1px solid var(--line-soft);
+      border-radius: 14px;
+      padding: 16px 18px;
+    }
+
+    .aspect-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    .aspect-pair {
+      font-weight: 600;
+      font-size: 14.5px;
+      color: var(--text);
+    }
+
+    .aspect-tag {
+      font-size: 10.5px;
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+    }
+
+    .tag-harm {
+      background: rgba(126, 168, 217, 0.14);
+      color: var(--azure);
+      border: 1px solid rgba(126, 168, 217, 0.35);
+    }
+
+    .tag-dyn {
+      background: rgba(217, 122, 122, 0.14);
+      color: var(--crimson);
+      border: 1px solid rgba(217, 122, 122, 0.35);
+    }
+
+    .tag-conj {
+      background: rgba(216, 184, 120, 0.16);
+      color: var(--gold-light);
+      border: 1px solid rgba(216, 184, 120, 0.38);
+    }
+
+    .aspect-meta {
+      font-size: 11.5px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .aspect-desc {
+      font-size: 13px;
+      color: #cbc6be;
+    }
+
+    /* 12 Archetypes Grid */
+    .archetype-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+    }
+
+    .arch-card {
+      background: var(--panel2);
+      border: 1px solid var(--line-soft);
+      border-radius: 16px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: border-color 0.2s;
+    }
+
+    .arch-card.is-dominant {
+      border-color: var(--gold);
+      background: linear-gradient(160deg, rgba(216, 184, 120, 0.11) 0%, var(--panel2) 60%);
+    }
+
+    .arch-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .arch-name {
+      font-family: var(--serif);
+      font-size: 24px;
+      font-weight: 600;
+      line-height: 1.1;
+    }
+
+    .arch-sub {
+      font-size: 11px;
+      color: var(--gold);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+
+    .arch-rank {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      padding: 4px 9px;
+      border-radius: 999px;
+      border: 1px solid var(--gold-border);
+      color: var(--gold-light);
+      white-space: nowrap;
+    }
+
+    .arch-body {
+      font-size: 13px;
+      color: #cbc6be;
+      margin: 8px 0 12px;
+    }
+
+    .arch-foot {
+      border-top: 1px solid var(--line-soft);
+      padding-top: 10px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .arch-foot strong {
+      color: var(--text);
+    }
+
+    /* Deep Synthesis Modules */
+    .synthesis-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+
+    .synth-card {
+      background: var(--panel2);
+      border: 1px solid var(--line-soft);
+      border-radius: 16px;
+      padding: 26px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .synth-num {
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
+    .synth-card h4 {
+      font-family: var(--serif);
+      font-size: 25px;
+      font-weight: 500;
+      margin-bottom: 12px;
+      color: var(--text);
+      line-height: 1.25;
+    }
+
+    .synth-card p {
+      font-size: 14px;
+      line-height: 1.72;
+      color: #d6d0c7;
+      margin-bottom: 12px;
+    }
+
+    .synth-card p:last-child {
+      margin-bottom: 0;
+    }
+
+    .synth-list {
+      margin: 8px 0 4px 18px;
+      color: #d6d0c7;
+      font-size: 13.8px;
+      line-height: 1.68;
+    }
+
+    .synth-list li {
+      margin-bottom: 6px;
+    }
+
+    .synth-highlight {
+      background: rgba(16, 16, 21, 0.72);
+      border-left: 3px solid var(--gold);
+      padding: 11px 15px;
+      border-radius: 0 10px 10px 0;
+      font-size: 13px;
+      color: var(--gold-light);
+      margin-top: 14px;
+    }
+
+    /* Insight & Awareness Hero Card */
+    .insight-box {
+      background: linear-gradient(145deg, #1e1c24 0%, #14141a 100%);
+      border: 1px solid var(--gold-border);
+      border-radius: 20px;
+      padding: 28px 32px;
+      margin-bottom: 26px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+    }
+
+    .insight-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--line-soft);
+    }
+
+    .insight-header h3 {
+      font-family: var(--serif);
+      font-size: 28px;
+      font-weight: 500;
+      color: var(--gold-light);
+      margin: 0;
+    }
+
+    .insight-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .insight-pillar {
+      background: rgba(16, 16, 21, 0.65);
+      border: 1px solid var(--line-soft);
+      border-radius: 14px;
+      padding: 18px;
+    }
+
+    .insight-pillar small {
+      display: block;
+      font-size: 10.5px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .insight-pillar p {
+      font-size: 13.8px;
+      line-height: 1.68;
+      color: #dcd6cd;
+      margin: 0;
+    }
+
+    @media (max-width: 960px) {
+      .insight-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Footer */
+    .footer {
+      border-top: 1px solid var(--line-soft);
+      padding: 36px 0 54px;
+      color: var(--muted);
+      font-size: 12.5px;
+    }
+
+    .footer-grid {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .disclaimer-box {
+      margin-top: 22px;
+      background: rgba(25, 25, 31, 0.8);
+      border-left: 3px solid var(--gold);
+      padding: 14px 18px;
+      border-radius: 0 12px 12px 0;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* Responsive Breakpoints */
+    @media (max-width: 960px) {
+      .chart-layout,
+      .balance-grid,
+      .archetype-grid {
+        grid-template-columns: 1fr;
+      }
+      .exec-banner,
+      .houses-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 720px) {
+      .wrap { padding: 0 16px; }
+      .hero { padding: 42px 0 26px; }
+      .form-card { padding: 20px; }
+      .col-6, .col-4, .col-3, .col-8 { grid-column: span 12; }
+      .exec-banner,
+      .big-three-grid,
+      .aspects-grid,
+      .synthesis-grid,
+      .advanced-panel.open {
+        grid-template-columns: 1fr;
+      }
+      .houses-grid {
+        grid-template-columns: 1fr;
+      }
+      .ed-section { padding: 22px; }
+      .creator-badge { display: none; }
+      .quick-nav { top: 72px; }
+    }
+
+    /* Print / PDF Stylesheet */
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 14mm;
+      }
+      body {
+        background: #ffffff !important;
+        color: #16161a !important;
+        font-size: 11pt;
+      }
+      .topbar,
+      .hero,
+      .quick-nav,
+      .no-print {
+        display: none !important;
+      }
+      .wrap {
+        max-width: 100%;
+        padding: 0;
+      }
+      .result-shell {
+        display: block !important;
+        margin-top: 0;
+      }
+      .print-banner {
+        display: flex !important;
+        justify-content: space-between;
+        align-items: flex-end;
+        border-bottom: 2px solid #16161a;
+        padding-bottom: 10px;
+        margin-bottom: 18px;
+      }
+      .ed-section,
+      .triad-card,
+      .house-card,
+      .balance-box,
+      .aspect-card,
+      .arch-card,
+      .synth-card,
+      .wheel-box,
+      .table-wrap {
+        background: #ffffff !important;
+        color: #16161a !important;
+        border: 1px solid #d4cfc7 !important;
+        box-shadow: none !important;
+        break-inside: avoid;
+      }
+      th {
+        background: #f4f1eb !important;
+        color: #16161a !important;
+      }
+      td, p, .triad-desc, .arch-body, .synth-card p, .aspect-desc {
+        color: #2b2b30 !important;
+      }
+      .sec-kicker, .triad-role, .house-num, .synth-num, .arch-sub, .brand span {
+        color: #7a5c20 !important;
+      }
+      .bar-track {
+        background: #e6e2da !important;
+      }
+      .bar-fill {
+        background: #7a5c20 !important;
+      }
+      .footer {
+        border-top: 1px solid #ccc;
+        color: #444 !important;
+      }
+    }
+
+    .print-banner {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <!-- Sticky Navigation -->
+  <header class="topbar">
+    <div class="wrap nav">
+      <div class="brand-group">
+        <a href="#" class="brand">ASTRO<span>NOMEN</span></a>
+        <span class="brand-sub">The Architecture of Name &amp; Stars</span>
+      </div>
+      <div class="nav-meta">
+        <div class="creator-badge">Created &amp; Developed by <strong>Muhammad Firman Syah</strong></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero & Birth Data Input -->
+  <section class="wrap hero">
+    <div class="eyebrow">The Architecture of Name &amp; Stars</div>
+    <h1>Decode Your <em>Stars</em> &amp; <em>Name.</em></h1>
+    <div class="hero-tagline">A unified symbolic framework uniting natal astrology and acoustic-symbolic name vibration.</div>
+    <p>
+      Temukan benang merah antara cetak biru langit saat Anda dilahirkan dan getaran bunyi-makna dari nama yang Anda sandang—untuk memahami potensi inti, pola bayangan, serta arah kesadaran diri.
+    </p>
+    <div class="hero-credit">CREATED &amp; DEVELOPED BY <span>MUHAMMAD FIRMAN SYAH</span></div>
+
+    <div class="form-card">
+      <div class="form-header">
+        <h2>Langkah 1 · Masukkan Identitas Nama &amp; Data Kelahiran</h2>
+        <div class="preset-group">
+          <button type="button" class="btn-ghost" onclick="applyPreset('surakarta')">Contoh: Surakarta</button>
+          <button type="button" class="btn-ghost" onclick="applyPreset('jakarta')">Contoh: Jakarta</button>
+          <button type="button" class="btn-ghost" onclick="applyPreset('tokyo')">Contoh: Tokyo</button>
+        </div>
+      </div>
+
+      <form id="chartForm" onsubmit="handleCalculate(event)">
+        <div class="form-grid">
+          <div class="field col-6">
+            <label for="fullName">Nama Lengkap (Identitas Struktural)</label>
+            <input type="text" id="fullName" placeholder="Contoh: Muhammad Firman Syah" autocomplete="off" />
+          </div>
+
+          <div class="field col-6">
+            <label for="callName">Nama Panggilan Aktif (Frekuensi Harian)</label>
+            <input type="text" id="callName" placeholder="Contoh: Firman (kosongkan jika menggunakan nama depan)" autocomplete="off" />
+          </div>
+
+          <div class="field col-4">
+            <label for="birthDate">Tanggal Lahir (DD/MM/YYYY)</label>
+            <input type="text" id="birthDate" inputmode="numeric" maxlength="10" placeholder="DD/MM/YYYY (mis. 17/08/1998)" required value="17/08/1998" />
+          </div>
+
+          <div class="field col-4">
+            <label for="birthTime">Jam Lahir (24 Jam · 00.00–23.59)</label>
+            <input type="text" id="birthTime" inputmode="numeric" maxlength="5" placeholder="00.00 - 23.59 (mis. 08.30)" required value="08.30" />
+          </div>
+
+          <div class="field col-4">
+            <label for="houseSystem">Sistem Rumah</label>
+            <select id="houseSystem">
+              <option value="placidus" selected>Placidus (Standar Modern)</option>
+              <option value="wholesign">Whole Sign (Tradisional)</option>
+              <option value="equal">Equal House</option>
+            </select>
+          </div>
+
+          <div class="field col-8">
+            <label for="cityInput">Kota Kelahiran</label>
+            <input type="text" id="cityInput" placeholder="Ketik nama kota (mis. Surakarta, Pasuruan, Jakarta...)" value="Surakarta" autocomplete="off" required />
+            <div id="citySuggestions" class="city-suggestions"></div>
+          </div>
+
+          <div class="field col-4">
+            <label for="countryInput">Negara</label>
+            <input type="text" id="countryInput" placeholder="Indonesia" value="Indonesia" required />
+          </div>
+        </div>
+
+        <div class="coord-bar">
+          <div class="coord-values">
+            <div class="coord-pill">Lokasi Terpilih: <span id="dispLocation">Surakarta, Indonesia</span></div>
+            <div class="coord-pill">Koordinat: <span id="dispCoords">-7.5755°, 110.8243°</span></div>
+            <div class="coord-pill">Zona Waktu: <span id="dispTz">UTC+7</span></div>
+          </div>
+          <button type="button" class="advanced-toggle" onclick="toggleAdvanced()">Ubah Koordinat / UTC Manual</button>
+        </div>
+
+        <div id="advancedPanel" class="advanced-panel">
+          <div class="field">
+            <label for="latInput">Lintang (Latitude)</label>
+            <input type="number" id="latInput" step="0.0001" min="-89.9" max="89.9" value="-7.5755" />
+          </div>
+          <div class="field">
+            <label for="lonInput">Bujur (Longitude)</label>
+            <input type="number" id="lonInput" step="0.0001" min="-180" max="180" value="110.8243" />
+          </div>
+          <div class="field">
+            <label for="tzInput">Offset UTC (Jam)</label>
+            <input type="number" id="tzInput" step="0.5" min="-12" max="14" value="7" />
+          </div>
+          <div class="field" style="justify-content: flex-end;">
+            <button type="button" class="btn-secondary" style="justify-content:center;" onclick="geocodeOnline()">Cari Koordinat Online</button>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <div id="statusMsg" class="status-msg">Isi nama dan data kelahiran Anda untuk membuka peta kesadaran diri.</div>
+          <button type="submit" class="btn-primary">Buka Peta ASTRONOMEN</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- Main Report Output -->
+  <main class="wrap">
+    <div id="resultShell" class="result-shell">
+      <!-- Print-only Editorial Masthead -->
+      <div class="print-banner">
+        <div>
+          <div style="font-size:18pt; letter-spacing:0.25em; font-weight:700;">ASTRONOMEN</div>
+          <div style="font-size:8.5pt; letter-spacing:0.18em; text-transform:uppercase; color:#555;">THE ARCHITECTURE OF NAME &amp; STARS — Unified Natal Astrology &amp; Name Vibration Framework</div>
+        </div>
+        <div style="text-align:right; font-size:8.5pt; color:#444;">
+          CREATED &amp; DEVELOPED BY<br />
+          <strong>MUHAMMAD FIRMAN SYAH</strong>
+        </div>
+      </div>
+
+      <!-- Toolbar & Subject Summary -->
+      <div class="result-toolbar">
+        <div class="subject-summary">
+          <h2 id="resSubjectName">Peta Kesadaran ASTRONOMEN</h2>
+          <p id="resSubjectMeta">—</p>
+        </div>
+        <div class="no-print" style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button type="button" class="btn-secondary" onclick="window.print()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 6 2 18 2 18 9"></polyline>
+              <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+              <rect x="6" y="14" width="12" height="8"></rect>
+            </svg>
+            Cetak / Simpan PDF
+          </button>
+        </div>
+      </div>
+
+      <!-- Sticky Quick Navigation Bar (Guided 4-Stage Flow) -->
+      <nav class="quick-nav no-print" aria-label="Alur Pembacaan Laporan">
+        <a href="#sec-intisari" class="qnav-link">00 · Intisari Kesadaran</a>
+        <a href="#sec-ringkasan" class="qnav-link">01 · Tiga Pilar Diri</a>
+        <a href="#sec-vibrasi" class="qnav-link">02 · Vibrasi &amp; Kode Nama</a>
+        <a href="#sec-ephemeris" class="qnav-link">03 · Peta Langit &amp; Planet</a>
+        <a href="#sec-rumah" class="qnav-link">04 · 12 Arena Hidup</a>
+        <a href="#sec-komposisi" class="qnav-link">05 · Elemen &amp; Dominasi</a>
+        <a href="#sec-aspek" class="qnav-link">06 · Dinamika Aspek</a>
+        <a href="#sec-arketipe" class="qnav-link">07 · 12 Arketipe</a>
+        <a href="#sec-sintesis" class="qnav-link">08 · Panduan Evolusi</a>
+      </nav>
+
+      <!-- Executive Overview Strip -->
+      <div id="execBanner" class="exec-banner"></div>
+
+      <!-- Stage 00: Core Awareness & Insight Synthesis Card -->
+      <section id="sec-intisari" class="insight-box" style="scroll-margin-top: 145px;">
+        <div class="insight-header">
+          <div>
+            <div class="sec-kicker" style="margin-bottom:2px;">00 · Ringkasan Pola Utama</div>
+            <h3>Gambaran Inti Peta Lahir &amp; Nama Anda</h3>
+          </div>
+          <span class="arch-rank" id="insightBadge">Memuat Peta Inti...</span>
+        </div>
+        <div id="insightGrid" class="insight-grid"></div>
+      </section>
+
+      <!-- Stage 01: Big Three Summary -->
+      <div id="sec-ringkasan" style="scroll-margin-top: 145px;">
+        <div id="bigThreeGrid" class="big-three-grid"></div>
+      </div>
+
+      <!-- Stage 02: Name Vibration & Acoustic-Symbolic Calibration (Promoted right after Big Three for clear flow) -->
+      <section id="sec-vibrasi" class="ed-section">
+        <div class="sec-header">
+          <div class="sec-kicker">02 · Analisis Vibrasi Nama &amp; Kalibrasi Wadah</div>
+          <h3>Struktur Bunyi, Kode &amp; Beban Nama</h3>
+          <p class="sec-lead">
+            Membaca pola bunyi, struktur huruf, dan beban simbolis nama serta membandingkannya dengan kapasitas temperamen dari peta kelahiran Anda.
+          </p>
+        </div>
+        <div id="nameVibrationContainer"></div>
+      </section>
+
+      <!-- Stage 03: Wheel Visualization & Planetary Positions -->
+      <section id="sec-ephemeris" class="ed-section">
+        <div class="sec-header">
+          <div class="sec-kicker">03 · Astronomic Ephemeris &amp; Natal Wheel</div>
+          <h3>Peta Langit Kelahiran &amp; Posisi 10 Planet + Lunar Nodes</h3>
+          <p class="sec-lead">
+            Roda natal chart dihitung dari waktu sidereal lokal (LST) dan koordinat kelahiran. Setiap planet mewakili satu fungsi psikologis spesifik di dalam diri Anda.
+          </p>
+        </div>
+
+        <div class="chart-layout">
+          <div class="wheel-box">
+            <div id="natalWheelContainer" style="width:100%; display:flex; justify-content:center;"></div>
+            <div class="wheel-legend">
+              <span><i class="legend-dot" style="background:#ecd49f;"></i>Conjunction (0°)</span>
+              <span><i class="legend-dot" style="background:#7ea8d9;"></i>Trine / Sextile (120° / 60°)</span>
+              <span><i class="legend-dot" style="background:#d97a7a;"></i>Square / Opposition (90° / 180°)</span>
+              <span><i class="legend-dot" style="background:#a78bd6;"></i>Quincunx (150°)</span>
+            </div>
+            <div id="wheelTooltip" class="wheel-tooltip">Arahkan kursor atau ketuk simbol planet pada roda chart untuk melihat detail derajat dan rumah.</div>
+          </div>
+
+          <div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Benda Langit</th>
+                    <th>Zodiak &amp; Derajat</th>
+                    <th>Rumah</th>
+                    <th>Status Gerak</th>
+                  </tr>
+                </thead>
+                <tbody id="planetTableBody"></tbody>
+              </table>
+            </div>
+            <div class="info-callout">
+              <strong>Panduan Status Gerak:</strong>
+              <span style="color:var(--emerald); font-weight:600;">Direct</span> berarti energi planet diekspresikan secara langsung ke luar.
+              <span style="color:var(--crimson); font-weight:600;">Retrograde (Rx)</span> berarti planet tampak bergerak mundur dari Bumi—secara simbolis energinya bekerja lebih reflektif, internal, dan mendalam di dalam batin.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Stage 04: 12 Astrological Houses -->
+      <section id="sec-rumah" class="ed-section">
+        <div class="sec-header">
+          <div class="sec-kicker">04 · Mundane Architecture</div>
+          <h3>12 Arena Kehidupan (<span id="activeHouseLabel">Placidus</span>)</h3>
+          <p class="sec-lead">
+            Dua belas rumah menunjukkan di area kehidupan nyata mana energi planet Anda paling aktif bekerja—mulai dari identitas personal hingga karier dan ruang batin.
+          </p>
+        </div>
+        <div id="housesGrid" class="houses-grid"></div>
+      </section>
+
+      <!-- Stage 05: Elements, Modalities & Chart Dominance -->
+      <section id="sec-komposisi" class="ed-section">
+        <div class="sec-header">
+          <div class="sec-kicker">05 · Energetic Composition</div>
+          <h3>Komposisi Elemen, Modalitas &amp; Dominasi Energi</h3>
+          <p class="sec-lead">
+            Mengukur keseimbangan empat elemen dasar (Api, Tanah, Udara, Air) dan ritme gerak (Cardinal, Fixed, Mutable) yang membentuk temperamen alami Anda.
+          </p>
+        </div>
+        <div id="balanceGrid" class="balance-grid"></div>
+      </section>
+
+      <!-- Stage 06: Planetary Aspects & Orbs -->
+      <section id="sec-aspek" class="ed-section">
+        <div class="sec-header">
+          <div class="sec-kicker">06 · Geometric Dialogue</div>
+          <h3>Dialog Internal: Aspek Planet &amp; Orb</h3>
+          <p class="sec-lead">
+            Aspek memperlihatkan bagian diri mana yang mengalir selaras (Trine/Sextile) dan bagian mana yang menciptakan tegangan pertumbuhan (Square/Opposition).
+          </p>
+        </div>
+        <div id="aspectsGrid" class="aspects-grid"></div>
+      </section>
+
+      <!-- Stage 07: 12 Archetype Mapping -->
+      <section id="sec-arketipe" class="ed-section">
+        <div class="sec-header">
+          <div class="sec-kicker">07 · Archetype Architecture</div>
+          <h3>Pemetaan 12 Arketipe</h3>
+          <p class="sec-lead">
+            Peringkat arketipe berdasarkan bobot penempatan planet, sudut chart, dan penekanan rumah—menunjukkan peran yang paling menonjol beserta potensi dan titik rawannya.
+          </p>
+        </div>
+        <div id="archetypeGrid" class="archetype-grid"></div>
+      </section>
+
+      <!-- Stage 08: Deep Psychological-Symbolic Synthesis -->
+      <section id="sec-sintesis" class="ed-section">
+        <div class="sec-header">
+          <div class="sec-kicker">08 · Interpretasi Mendalam</div>
+          <h3>Enam Dimensi Karakter &amp; Dinamika Hidup</h3>
+          <p class="sec-lead">
+            Pembacaan terstruktur mengenai persona, sisi bayangan, gesekan internal, relasi, kepemimpinan, dan arah pengembangan karakter.
+          </p>
+        </div>
+        <div id="synthesisGrid" class="synthesis-grid"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="wrap footer">
+    <div class="footer-grid">
+      <div>
+        <strong style="color:var(--gold); letter-spacing:0.2em; font-size:14px;">ASTRONOMEN</strong> — <em>The Architecture of Name &amp; Stars</em><br />
+        A unified symbolic framework for understanding human archetypes through astrology &amp; name vibration.
+      </div>
+      <div style="text-align:right;">
+        <span style="font-size:11px; letter-spacing:0.16em; text-transform:uppercase; color:var(--gold);">Created &amp; Developed by</span><br />
+        <strong style="color:var(--text); font-size:13.5px; letter-spacing:0.08em;">MUHAMMAD FIRMAN SYAH</strong>
+      </div>
+    </div>
+    <div class="disclaimer-box">
+      <strong>Catatan Metodologis:</strong> Perhitungan posisi planet, Ascendant, Midheaven, dan rumah menggunakan algoritma astronomi geosentris (Julian Ephemeris &amp; VSOP/ELP truncated series), dipadukan dengan kerangka analisis fonetik-numerik-semantik ASTRONOMEN sebagai sarana refleksi kesadaran diri, bukan alat diagnosis medis atau psikometri klinis.
+    </div>
+  </footer>
+
+  <script>
+    /* =========================================================================
+       1. BUILT-IN GLOBAL & INDONESIAN CITY DATABASE + GEOCODER
+       ========================================================================= */
+    const CITIES_DB = [
+      { city: "Surakarta (Solo)", country: "Indonesia", lat: -7.5755, lon: 110.8243, tz: 7 },
+      { city: "Jakarta", country: "Indonesia", lat: -6.2088, lon: 106.8456, tz: 7 },
+      { city: "Surabaya", country: "Indonesia", lat: -7.2575, lon: 112.7521, tz: 7 },
+      { city: "Pasuruan", country: "Indonesia", lat: -7.6453, lon: 112.9075, tz: 7 },
+      { city: "Bangkalan", country: "Indonesia", lat: -7.0455, lon: 112.7351, tz: 7 },
+      { city: "Malang", country: "Indonesia", lat: -7.9666, lon: 112.6326, tz: 7 },
+      { city: "Yogyakarta", country: "Indonesia", lat: -7.7956, lon: 110.3695, tz: 7 },
+      { city: "Bandung", country: "Indonesia", lat: -6.9175, lon: 107.6191, tz: 7 },
+      { city: "Semarang", country: "Indonesia", lat: -6.9667, lon: 110.4167, tz: 7 },
+      { city: "Denpasar", country: "Indonesia", lat: -8.6705, lon: 115.2126, tz: 8 },
+      { city: "Medan", country: "Indonesia", lat: 3.5952, lon: 98.6722, tz: 7 },
+      { city: "Palembang", country: "Indonesia", lat: -2.9761, lon: 104.7754, tz: 7 },
+      { city: "Makassar", country: "Indonesia", lat: -5.1477, lon: 119.4327, tz: 8 },
+      { city: "Balikpapan", country: "Indonesia", lat: -1.2379, lon: 116.8529, tz: 8 },
+      { city: "Banjarmasin", country: "Indonesia", lat: -3.3186, lon: 114.5944, tz: 8 },
+      { city: "Pontianak", country: "Indonesia", lat: -0.0263, lon: 109.3425, tz: 7 },
+      { city: "Manado", country: "Indonesia", lat: 1.4748, lon: 124.8421, tz: 8 },
+      { city: "Jayapura", country: "Indonesia", lat: -2.5916, lon: 140.6690, tz: 9 },
+      { city: "Padang", country: "Indonesia", lat: -0.9471, lon: 100.4172, tz: 7 },
+      { city: "Pekanbaru", country: "Indonesia", lat: 0.5071, lon: 101.4478, tz: 7 },
+      { city: "Bogor", country: "Indonesia", lat: -6.5971, lon: 106.8060, tz: 7 },
+      { city: "Kediri", country: "Indonesia", lat: -7.8480, lon: 112.0178, tz: 7 },
+      { city: "Madiun", country: "Indonesia", lat: -7.6298, lon: 111.5239, tz: 7 },
+      { city: "Sidoarjo", country: "Indonesia", lat: -7.4478, lon: 112.7183, tz: 7 },
+      { city: "Gresik", country: "Indonesia", lat: -7.1539, lon: 112.6561, tz: 7 },
+      { city: "Jember", country: "Indonesia", lat: -8.1845, lon: 113.6681, tz: 7 },
+      { city: "Banyuwangi", country: "Indonesia", lat: -8.2192, lon: 114.3691, tz: 7 },
+      { city: "Singapore", country: "Singapore", lat: 1.3521, lon: 103.8198, tz: 8 },
+      { city: "Kuala Lumpur", country: "Malaysia", lat: 3.1390, lon: 101.6869, tz: 8 },
+      { city: "Tokyo", country: "Japan", lat: 35.6762, lon: 139.6503, tz: 9 },
+      { city: "Seoul", country: "South Korea", lat: 37.5665, lon: 126.9780, tz: 9 },
+      { city: "London", country: "United Kingdom", lat: 51.5074, lon: -0.1278, tz: 0 },
+      { city: "Paris", country: "France", lat: 48.8566, lon: 2.3522, tz: 1 },
+      { city: "Berlin", country: "Germany", lat: 52.5200, lon: 13.4050, tz: 1 },
+      { city: "New York", country: "United States", lat: 40.7128, lon: -74.0060, tz: -5 },
+      { city: "Los Angeles", country: "United States", lat: 34.0522, lon: -118.2437, tz: -8 },
+      { city: "Sydney", country: "Australia", lat: -33.8688, lon: 151.2093, tz: 10 },
+      { city: "Mecca", country: "Saudi Arabia", lat: 21.4225, lon: 39.8262, tz: 3 },
+      { city: "Istanbul", country: "Turkey", lat: 41.0082, lon: 28.9784, tz: 3 },
+      { city: "Cairo", country: "Egypt", lat: 30.0444, lon: 31.2357, tz: 2 }
+    ];
+
+    /* =========================================================================
+       2. ASTROLOGICAL SYMBOLS, SIGNS & ARCHETYPE KNOWLEDGE BASE
+       ========================================================================= */
+    const SIGNS = [
+      { name: "Aries", glyph: "♈", element: "Api", modality: "Cardinal", polarity: "Yang", ruler: "Mars", motto: "The Initiator",
+        keyword: "inisiatif, keberanian, dan dorongan memulai",
+        persona: "tampil lugas, berani mengambil langkah pertama, dan merespons tantangan secara langsung.",
+        shadow: "impulsivitas, ketidaksabaran, atau dorongan menang yang mengabaikan ritme sekitar." },
+      { name: "Taurus", glyph: "♉", element: "Tanah", modality: "Fixed", polarity: "Yin", ruler: "Venus", motto: "The Builder",
+        keyword: "stabilitas, ketahanan, dan penghargaan terhadap kualitas nyata",
+        persona: "hadir dengan ketenangan yang membumi, konsisten, dan dapat diandalkan dalam jangka panjang.",
+        shadow: "keras kepala, keterikatan berlebihan pada kenyamanan, atau keengganan menghadapi perubahan." },
+      { name: "Gemini", glyph: "♊", element: "Udara", modality: "Mutable", polarity: "Yang", ruler: "Merkurius", motto: "The Communicator",
+        keyword: "rasa ingin tahu, kelincahan verbal, dan pertukaran gagasan",
+        persona: "terlihat komunikatif, adaptif, cerdas menghubungkan ide, dan terbuka pada sudut pandang baru.",
+        shadow: "dispersi fokus, kegelisahan mental, atau merasionalisasi perasaan tanpa menyelaminya." },
+      { name: "Cancer", glyph: "♋", element: "Air", modality: "Cardinal", polarity: "Yin", ruler: "Bulan", motto: "The Nurturer",
+        keyword: "kepekaan emosional, perlindungan, dan memori batin",
+        persona: "memancarkan kehangatan protektif, empati, dan kemampuan membaca suasana emosional.",
+        shadow: "sikap defensif berlebihan, menyimpan luka masa lalu, atau keterikatan emosional yang mengekang." },
+      { name: "Leo", glyph: "♌", element: "Api", modality: "Fixed", polarity: "Yang", ruler: "Matahari", motto: "The Sovereign Creator",
+        keyword: "ekspresi diri, vitalitas kreatif, dan martabat",
+        persona: "hadir dengan karisma hangat, keberanian berekspresi, dan kemurahan hati yang menginspirasi.",
+        shadow: "kebutuhan validasi berlebih, sensitivitas terhadap kritik, atau dominasi panggung." },
+      { name: "Virgo", glyph: "♍", element: "Tanah", modality: "Mutable", polarity: "Yin", ruler: "Merkurius", motto: "The Analyst",
+        keyword: "ketelitian, penyempurnaan sistem, dan pelayanan bermakna",
+        persona: "tampak terstruktur, analitis, cermat terhadap detail, dan solutif dalam hal praktis.",
+        shadow: "perfeksionisme yang melumpuhkan, kritik diri berlebihan, atau kecemasan atas ketidaksempurnaan." },
+      { name: "Libra", glyph: "♎", element: "Udara", modality: "Cardinal", polarity: "Yang", ruler: "Venus", motto: "The Harmonizer",
+        keyword: "keseimbangan, diplomasi, keadilan, dan estetika relasional",
+        persona: "tampil santun, diplomatis, peka terhadap proporsi, dan mampu menjembatani perbedaan.",
+        shadow: "keraguan mengambil keputusan tegas atau mengorbankan pendirian demi menjaga harmoni semu." },
+      { name: "Scorpio", glyph: "♏", element: "Air", modality: "Fixed", polarity: "Yin", ruler: "Pluto", motto: "The Alchemist",
+        keyword: "kedalaman psikologis, intensitas, dan transformasi",
+        persona: "memancarkan kehadiran yang tenang namun tajam, fokus, dan tidak mudah terpengaruh permukaan.",
+        shadow: "kecurigaan, kebutuhan mengontrol dinamika tersembunyi, atau sulit melepaskan pengkhianatan." },
+      { name: "Sagittarius", glyph: "♐", element: "Api", modality: "Mutable", polarity: "Yang", ruler: "Jupiter", motto: "The Seeker",
+        keyword: "pencarian makna, kebebasan eksplorasi, dan visi filosofis",
+        persona: "terlihat antusias, jujur, berwawasan luas, dan berorientasi pada kemungkinan masa depan.",
+        shadow: "dogmatisme, menghindari tanggung jawab rutin, atau kurang cermat pada detail teknis." },
+      { name: "Capricorn", glyph: "♑", element: "Tanah", modality: "Cardinal", polarity: "Yin", ruler: "Saturnus", motto: "The Architect",
+        keyword: "struktur, disiplin jangka panjang, dan otoritas yang matang",
+        persona: "hadir dengan wibawa tenang, etos kerja serius, dan orientasi pada pencapaian konkret.",
+        shadow: "kekakuan emosional, beban tanggung jawab berlebih, atau mengukur nilai diri semata dari status." },
+      { name: "Aquarius", glyph: "♒", element: "Udara", modality: "Fixed", polarity: "Yang", ruler: "Uranus", motto: "The Visionary",
+        keyword: "pembaruan sistemik, kemandirian berpikir, dan kesadaran kolektif",
+        persona: "tampil orisinal, objektif, progresif, dan menghargai kebebasan intelektual.",
+        shadow: "keterpisahan emosional, sikap kontraris demi terlihat berbeda, atau idealisme yang kaku." },
+      { name: "Pisces", glyph: "♓", element: "Air", modality: "Mutable", polarity: "Yin", ruler: "Neptunus", motto: "The Mystic",
+        keyword: "imajinasi, empati lintas batas, dan resonansi spiritual",
+        persona: "memancarkan kelembutan intuitif, kreativitas puitis, dan penerimaan tanpa cepat menghakimi.",
+        shadow: "batas personal yang kabur, idealisasi berlebihan, atau kecenderungan menghindar dari realitas keras." }
+    ];
+
+    const HOUSE_THEMES = [
+      { num: 1, name: "Rumah I · Ascendant", area: "Identitas, Persona & Kehadiran Fisik" },
+      { num: 2, name: "Rumah II · Nilai & Sumber Daya", area: "Finansial, Kapasitas Diri & Rasa Aman" },
+      { num: 3, name: "Rumah III · Pikiran & Lingkungan", area: "Komunikasi, Pembelajaran & Saudara" },
+      { num: 4, name: "Rumah IV · Imum Coeli (IC)", area: "Akar Keluarga, Rumah Batin & Fondasi" },
+      { num: 5, name: "Rumah V · Kreativitas & Ekspresi", area: "Karya, Romansa, Permainan & Vitalitas" },
+      { num: 6, name: "Rumah VI · Ritme & Pelayanan", area: "Kerja Harian, Kesehatan & Keterampilan" },
+      { num: 7, name: "Rumah VII · Descendant", area: "Kemitraan, Pernikahan & Cermin Relasional" },
+      { num: 8, name: "Rumah VIII · Transformasi", area: "Kedalaman Psikologis, Krisis & Aset Bersama" },
+      { num: 9, name: "Rumah IX · Filsafat & Horison", area: "Makna Hidup, Pendidikan Tinggi & Perjalanan" },
+      { num: 10, name: "Rumah X · Midheaven (MC)", area: "Panggilan Publik, Karier & Warisan Karya" },
+      { num: 11, name: "Rumah XI · Komunitas & Visi", area: "Jejaring, Kolaborasi & Cita-Cita Masa Depan" },
+      { num: 12, name: "Rumah XII · Alam Bawah Sadar", area: "Kontemplasi, Shadow Tersembunyi & Transendensi" }
+    ];
+
+    const ARCHETYPES_META = [
+      { id: "Architect", name: "The Ruler / Architect", sub: "Order & Stewardship",
+        core: "Membangun struktur yang tahan uji waktu, mengambil tanggung jawab penuh atas arah sistem, dan menciptakan keteraturan dari kekacauan.",
+        gift: "Kepemimpinan strategis, ketegasan, dan tata kelola yang adil.",
+        shadow: "Kontrol berlebihan, kekakuan aturan, atau takut kehilangan otoritas." },
+      { id: "Sage", name: "The Sage", sub: "Truth & Clarity",
+        core: "Mencari pemahaman objektif melalui observasi tajam, analisis pola, dan kontemplasi intelektual yang jernih.",
+        gift: "Kebijaksanaan analitis, objektivitas, dan kemampuan mensintesis pengetahuan.",
+        shadow: "Overthinking berkepanjangan, menara gading intelektual, atau ragu bertindak." },
+      { id: "Magician", name: "The Magician", sub: "Transformation & Insight",
+        core: "Memahami dinamika tersembunyi di balik permukaan dan mentransformasi krisis menjadi kesadaran maupun terobosan baru.",
+        gift: "Kedalaman psikologis, daya katalis, dan kecerdasan strategis.",
+        shadow: "Manipulasi halus, obsesi kendali, atau terjebak dalam intensitas batin." },
+      { id: "Hero", name: "The Hero", sub: "Courage & Mastery",
+        core: "Menghadapi rintangan secara langsung, membuktikan kapasitas melalui tindakan nyata, dan melindungi nilai yang diperjuangkan.",
+        gift: "Daya juang tinggi, keberanian mengambil inisiatif, dan ketangguhan.",
+        shadow: "Selalu merasa harus bertarung atau membuktikan harga diri lewat kemenangan." },
+      { id: "Creator", name: "The Creator", sub: "Expression & Form",
+        core: "Mewujudkan visi imajinatif menjadi karya, sistem, atau ekspresi estetik yang memiliki tanda tangan orisinal.",
+        gift: "Orisinalitas kreatif, kepekaan estetika, dan daya cipta.",
+        shadow: "Perfeksionisme yang menghambat penyelesaian atau terlalu melekat pada pengakuan." },
+      { id: "Explorer", name: "The Explorer", sub: "Autonomy & Horizon",
+        core: "Menjelajahi batas pemikiran, budaya, dan pengalaman baru demi menemukan keaslian diri tanpa terkekang konvensi sempit.",
+        gift: "Kemandirian, keterbukaan wawasan, dan keberanian melampaui zona nyaman.",
+        shadow: "Kegelisahan kronis, sulit berkomitmen jangka panjang, atau pelarian." },
+      { id: "Outlaw", name: "The Outlaw / Visionary", sub: "Liberation & Reform",
+        core: "Mempertanyakan norma usang dan merombak struktur yang tidak lagi adil agar ruang pembaruan dapat terbuka.",
+        gift: "Keberanian intelektual, inovasi radikal, dan integritas terhadap kebenaran.",
+        shadow: "Memberontak tanpa solusi konstruktif atau keterasingan sosial." },
+      { id: "Caregiver", name: "The Caregiver", sub: "Empathy & Sanctuary",
+        core: "Menciptakan ruang aman, merawat pertumbuhan orang lain, dan hadir dengan kepedulian praktis yang menenangkan.",
+        gift: "Empati mendalam, kesetiaan, dan ketulusan melayani.",
+        shadow: "Pengorbanan diri berlebihan, kelelahan emosional, atau sulit berkata tidak." },
+      { id: "Lover", name: "The Lover", sub: "Connection & Devotion",
+        core: "Membangun kedekatan emosional yang autentik, mengapresiasi keindahan hidup, dan menyelaraskan nilai antar-manusia.",
+        gift: "Kehangatan relasional, diplomasi, dan kepekaan terhadap harmoni.",
+        shadow: "Ketergantungan pada validasi pasangan atau takut terhadap penolakan." },
+      { id: "Everyman", name: "The Everyman", sub: "Belonging & Groundedness",
+        core: "Menjunjung kesetaraan, solidaritas membumi, dan keandalan dalam membangun kepercayaan bersama komunitas.",
+        gift: "Kerendahan hati, keandalan praktis, dan kemampuan merangkul lintas kalangan.",
+        shadow: "Terlalu menyesuaikan diri dengan kerumunan hingga meredupkan suara autentik." },
+      { id: "Jester", name: "The Jester", sub: "Wit & Perspective",
+        core: "Menggunakan kecerdasan humor, spontanitas, dan kelincahan perspektif untuk mencairkan ketegangan serta mengungkap paradoks.",
+        gift: "Kreativitas verbal, keluwesan mental, dan kemampuan menghidupkan suasana.",
+        shadow: "Menghindari percakapan serius atau menyembunyikan kerentanan di balik candaan." },
+      { id: "Innocent", name: "The Innocent", sub: "Faith & Renewal",
+        core: "Menjaga kemurnian niat, optimisme terhadap kemungkinan baik, dan kejernihan batin di tengah kompleksitas dunia.",
+        gift: "Harapan yang memulihkan, ketulusan, dan kepercayaan pada makna hidup.",
+        shadow: "Idealisasi naif atau menyangkal sisi gelap realitas yang perlu dihadapi." }
+    ];
+
+    /* =========================================================================
+       3. HIGH-PRECISION ASTRONOMICAL EPHEMERIS ENGINE (Meeus / VSOP / ELP)
+       ========================================================================= */
+    const DEG2RAD = Math.PI / 180;
+    const RAD2DEG = 180 / Math.PI;
+
+    function norm360(deg) {
+      let x = deg % 360;
+      return x < 0 ? x + 360 : x;
+    }
+
+    function norm180(deg) {
+      let x = norm360(deg);
+      return x > 180 ? x - 360 : x;
+    }
+
+    function sind(d) { return Math.sin(d * DEG2RAD); }
+    function cosd(d) { return Math.cos(d * DEG2RAD); }
+    function tand(d) { return Math.tan(d * DEG2RAD); }
+    function atan2d(y, x) { return Math.atan2(y, x) * RAD2DEG; }
+    function asind(x) { return Math.asin(Math.max(-1, Math.min(1, x))) * RAD2DEG; }
+
+    // Julian Day from UTC components
+    function toJulianDay(year, month, day, hourUT) {
+      let y = year;
+      let m = month;
+      if (m <= 2) {
+        y -= 1;
+        m += 12;
+      }
+      const A = Math.floor(y / 100);
+      const B = 2 - A + Math.floor(A / 4);
+      return Math.floor(365.25 * (y + 4716)) + Math.floor(30.6001 * (m + 1)) + day + hourUT / 24.0 + B - 1524.5;
+    }
+
+    // Solve Kepler's Equation E - e*sin(E) = M (degrees)
+    function solveKepler(Mdeg, e) {
+      const M = norm360(Mdeg) * DEG2RAD;
+      let E = M + e * Math.sin(M) * (1.0 + e * Math.cos(M));
+      for (let i = 0; i < 12; i++) {
+        const dE = (E - e * Math.sin(E) - M) / (1 - e * Math.cos(E));
+        E -= dE;
+        if (Math.abs(dE) < 1e-11) break;
+      }
+      return E;
+    }
+
+    // Heliocentric & Geocentric Ecliptic Longitudes at Julian Day JD
+    function computeBodiesAtJD(jd) {
+      const d = jd - 2451545.0; // Days since J2000.0
+      const T = d / 36525.0;    // Julian centuries since J2000.0
+
+      // Obliquity of the ecliptic (Meeus 22.2)
+      const eps = 23.4392911 - 0.013004167 * T - 1.6389e-7 * T * T + 5.036e-7 * T * T * T;
+
+      // --- 1. SUN (Geometric + Equation of Center + Nutation/Aberration) ---
+      const L0 = norm360(280.46646 + 36000.76983 * T + 0.0003032 * T * T);
+      const Msun = norm360(357.52911 + 35999.05029 * T - 0.0001537 * T * T);
+      const eEarth = 0.016708634 - 0.000042037 * T - 0.0000001267 * T * T;
+      const Csun = (1.914602 - 0.004817 * T - 0.000014 * T * T) * sind(Msun)
+                 + (0.019993 - 0.000101 * T) * sind(2 * Msun)
+                 + 0.000289 * sind(3 * Msun);
+      const sunTrueLon = norm360(L0 + Csun);
+      const vSun = norm360(Msun + Csun);
+      const rSun = (1.000001018 * (1 - eEarth * eEarth)) / (1 + eEarth * cosd(vSun));
+      const omegaNode = norm360(125.04 - 1934.136 * T);
+      const sunApparentLon = norm360(sunTrueLon - 0.00569 - 0.00478 * sind(omegaNode));
+
+      // Earth heliocentric coordinates (ecliptic plane)
+      const earthHelioLon = norm360(sunTrueLon + 180);
+      const xE = rSun * cosd(earthHelioLon);
+      const yE = rSun * sind(earthHelioLon);
+      const zE = 0;
+
+      // --- 2. MOON (Meeus Ch. 47 truncated ELP-2000 periodic terms) ---
+      const Lp = norm360(218.3164477 + 481267.88123421 * T - 0.0015786 * T * T + T * T * T / 538841);
+      const D  = norm360(297.8501921 + 445267.1114034 * T - 0.0018819 * T * T + T * T * T / 545868);
+      const M  = Msun;
+      const Mp = norm360(134.9633964 + 477198.8675055 * T + 0.0087414 * T * T + T * T * T / 69699);
+      const F  = norm360(93.2720950 + 483202.0175233 * T - 0.0036539 * T * T);
+      const A1 = norm360(119.75 + 131.849 * T);
+      const A2 = norm360(53.09 + 479264.290 * T);
+      const E_ecc = 1 - 0.002516 * T - 0.0000074 * T * T;
+
+      let sumL = 0;
+      const moonTerms = [
+        [0, 0, 1, 0, 6288774],
+        [2, 0, -1, 0, 1274027],
+        [2, 0, 0, 0, 658314],
+        [0, 0, 2, 0, 213618],
+        [0, 1, 0, 0, -185116],
+        [0, 0, 0, 2, -114332],
+        [2, 0, -2, 0, 58793],
+        [2, -1, -1, 0, 57066],
+        [2, 0, 1, 0, 53322],
+        [2, -1, 0, 0, 45758],
+        [0, 1, -1, 0, -40923],
+        [1, 0, 0, 0, -34720],
+        [0, 1, 1, 0, -30383],
+        [2, 0, 0, -2, 15327],
+        [0, 0, 1, 2, -12528],
+        [0, 0, 1, -2, 10980],
+        [4, 0, -1, 0, 10675],
+        [0, 0, 3, 0, 10034],
+        [4, 0, -2, 0, 8548],
+        [2, 1, -1, 0, -7888],
+        [2, 1, 0, 0, -6766],
+        [1, 0, -1, 0, -5163],
+        [1, 1, 0, 0, 4987],
+        [2, -1, 1, 0, 4036],
+        [2, 0, 2, 0, 3994],
+        [4, 0, 0, 0, 3861],
+        [2, 0, -3, 0, 3665],
+        [0, 1, -2, 0, -2689],
+        [2, 0, -1, 2, -2602],
+        [2, -1, -2, 0, 2390],
+        [1, 0, 1, 0, -2348],
+        [2, -2, 0, 0, 2236],
+        [0, 1, 2, 0, -2120],
+        [0, 2, 0, 0, -2069],
+        [2, -2, -1, 0, 2048]
+      ];
+      for (const [dMul, mMul, mpMul, fMul, coeff] of moonTerms) {
+        let term = coeff * sind(dMul * D + mMul * M + mpMul * Mp + fMul * F);
+        if (Math.abs(mMul) === 1) term *= E_ecc;
+        if (Math.abs(mMul) === 2) term *= E_ecc * E_ecc;
+        sumL += term;
+      }
+      sumL += 3958 * sind(A1) + 1962 * sind(Lp - F) + 318 * sind(A2);
+      const moonLon = norm360(Lp + sumL / 1000000.0);
+
+      // Helper for Keplerian + Perturbation Geocentric Planet Longitude
+      function calcKeplerPlanet(el) {
+        const a = el.a0 + el.a1 * T;
+        const e = el.e0 + el.e1 * T;
+        const inc = el.i0 + el.i1 * T;
+        const L = norm360(el.L0 + el.L1 * T + (el.L2 || 0) * T * T);
+        const wbar = norm360(el.w0 + el.w1 * T);
+        const Omega = norm360(el.O0 + el.O1 * T);
+        const w = norm360(wbar - Omega);
+        const M_anom = norm360(L - wbar);
+
+        const E = solveKepler(M_anom, e);
+        const xv = a * (Math.cos(E) - e);
+        const yv = a * Math.sqrt(1 - e * e) * Math.sin(E);
+        const v = atan2d(yv, xv);
+        const r = Math.hypot(xv, yv);
+
+        const u = v + w;
+        const xh = r * (cosd(Omega) * cosd(u) - sind(Omega) * sind(u) * cosd(inc));
+        const yh = r * (sind(Omega) * cosd(u) + cosd(Omega) * sind(u) * cosd(inc));
+        const zh = r * (sind(u) * sind(inc));
+
+        const xg = xh - xE;
+        const yg = yh - yE;
+        const zg = zh - zE;
+
+        let lon = atan2d(yg, xg);
+        if (el.pert) lon += el.pert(T);
+        return norm360(lon);
+      }
+
+      // JPL / Meeus J2000 Orbital Elements + Major Mutual Perturbations
+      const elements = {
+        Mercury: { a0: 0.38709893, a1: 0.00000066, e0: 0.20563069, e1: 0.00002527, i0: 7.00487, i1: -0.005947, L0: 252.25084, L1: 149472.67411, w0: 77.45645, w1: 0.160477, O0: 48.33167, O1: -0.125341 },
+        Venus:   { a0: 0.72333199, a1: 0.00000092, e0: 0.00677323, e1: -0.00004938, i0: 3.39471, i1: -0.000789, L0: 181.97973, L1: 58517.81539, w0: 131.53298, w1: 0.004883, O0: 76.68069, O1: -0.277694 },
+        Mars:    { a0: 1.52366231, a1: -0.00007221, e0: 0.09341233, e1: 0.00011902, i0: 1.85061, i1: -0.008131, L0: 355.45332, L1: 19140.30268, w0: 336.04084, w1: 0.444411, O0: 49.57854, O1: -0.292573 },
+        Jupiter: {
+          a0: 5.20336301, a1: 0.00060737, e0: 0.04839266, e1: -0.00012880, i0: 1.30530, i1: -0.001837, L0: 34.40438, L1: 3034.90567, w0: 14.75385, w1: 0.212527, O0: 100.55615, O1: 0.204691,
+          pert: (T) => {
+            const Mj = norm360(20.02 + 3034.906 * T);
+            const Ms = norm360(317.02 + 1222.114 * T);
+            return -0.332 * sind(2 * Mj - 5 * Ms - 67.6)
+                   - 0.056 * sind(2 * Mj - 2 * Ms + 21)
+                   + 0.042 * sind(3 * Mj - 5 * Ms + 21)
+                   - 0.036 * sind(Mj - 2 * Ms);
+          }
+        },
+        Saturn: {
+          a0: 9.53707032, a1: -0.00301530, e0: 0.05415060, e1: -0.00036762, i0: 2.48446, i1: 0.001936, L0: 49.94432, L1: 1222.11379, w0: 92.43194, w1: 0.541707, O0: 113.71504, O1: -0.288678,
+          pert: (T) => {
+            const Mj = norm360(20.02 + 3034.906 * T);
+            const Ms = norm360(317.02 + 1222.114 * T);
+            return +0.812 * sind(2 * Mj - 5 * Ms - 67.6)
+                   - 0.229 * cosd(2 * Mj - 4 * Ms - 2)
+                   + 0.119 * sind(Mj - 2 * Ms - 3)
+                   + 0.046 * sind(2 * Mj - 6 * Ms - 69);
+          }
+        },
+        Uranus: {
+          a0: 19.19126393, a1: 0.00152025, e0: 0.04716771, e1: -0.00019150, i0: 0.76986, i1: -0.002097, L0: 313.23218, L1: 428.466998, w0: 170.96424, w1: 0.408053, O0: 74.22988, O1: 0.042406,
+          pert: (T) => {
+            const Mj = norm360(20.02 + 3034.906 * T);
+            const Ms = norm360(317.02 + 1222.114 * T);
+            const Mu = norm360(142.59 + 428.467 * T);
+            return +0.040 * sind(Ms - 2 * Mu + 6) + 0.035 * sind(Ms - 3 * Mu + 33) - 0.015 * sind(Mj - Mu + 20);
+          }
+        },
+        Neptune: { a0: 30.06896348, a1: -0.00125196, e0: 0.00858587, e1: 0.00002514, i0: 1.76917, i1: -0.003646, L0: 304.88003, L1: 218.486200, w0: 44.97135, w1: -0.322415, O0: 131.72169, O1: -0.005087 },
+        Pluto:   { a0: 39.48168677, a1: -0.00076912, e0: 0.24880766, e1: 0.00006465, i0: 17.14175, i1: 0.01107, L0: 238.92881, L1: 145.2078, w0: 224.06676, w1: -0.13225, O0: 110.30347, O1: -0.01183 }
+      };
+
+      // True Lunar Node (Meeus Ch. 47)
+      const meanNode = norm360(125.0445479 - 1934.1362891 * T + 0.0020754 * T * T);
+      const trueNode = norm360(
+        meanNode
+        - 1.4979 * sind(2 * (D - F))
+        - 0.1500 * sind(M)
+        - 0.1226 * sind(2 * D)
+        + 0.1176 * sind(2 * F)
+        - 0.0801 * sind(2 * (Mp - F))
+      );
+
+      return {
+        eps,
+        Sun: sunApparentLon,
+        Moon: moonLon,
+        Mercury: calcKeplerPlanet(elements.Mercury),
+        Venus: calcKeplerPlanet(elements.Venus),
+        Mars: calcKeplerPlanet(elements.Mars),
+        Jupiter: calcKeplerPlanet(elements.Jupiter),
+        Saturn: calcKeplerPlanet(elements.Saturn),
+        Uranus: calcKeplerPlanet(elements.Uranus),
+        Neptune: calcKeplerPlanet(elements.Neptune),
+        Pluto: calcKeplerPlanet(elements.Pluto),
+        NorthNode: trueNode,
+        SouthNode: norm360(trueNode + 180)
+      };
+    }
+
+    // Calculate Sidereal Time, ASC, MC, and 12 House Cusps
+    function computeAnglesAndHouses(jd, lat, lon, eps, system) {
+      const T = (jd - 2451545.0) / 36525.0;
+      const gmst = norm360(
+        280.46061837
+        + 360.98564736629 * (jd - 2451545.0)
+        + 0.000387933 * T * T
+        - (T * T * T) / 38710000
+      );
+      const lst = norm360(gmst + lon); // Local Sidereal Time in degrees (RAMC)
+      const ramc = lst;
+
+      // Midheaven (MC)
+      let mc = atan2d(sind(ramc), cosd(ramc) * cosd(eps));
+      mc = norm360(mc);
+      // Quadrant alignment for MC with RAMC
+      if (Math.abs(norm180(mc - ramc)) > 90) {
+        mc = norm360(mc + 180);
+      }
+
+      // Ascendant (ASC)
+      let asc = atan2d(
+        cosd(ramc),
+        -(sind(ramc) * cosd(eps) + tand(lat) * sind(eps))
+      );
+      asc = norm360(asc);
+
+      const cusps = new Array(13).fill(0);
+      cusps[1] = asc;
+      cusps[10] = mc;
+      cusps[4] = norm360(mc + 180);
+      cusps[7] = norm360(asc + 180);
+
+      if (system === "wholesign") {
+        const firstSignStart = Math.floor(asc / 30) * 30;
+        for (let h = 1; h <= 12; h++) {
+          cusps[h] = norm360(firstSignStart + (h - 1) * 30);
+        }
+      } else if (system === "equal" || Math.abs(lat) > 66.0) {
+        for (let h = 1; h <= 12; h++) {
+          cusps[h] = norm360(asc + (h - 1) * 30);
+        }
+      } else {
+        // Placidus Semi-Arc Iterative Method (Houses 11, 12, 2, 3)
+        function placidusCusp(fraction, isAboveHorizon) {
+          let ra = norm360(ramc + (isAboveHorizon ? fraction * 90 : 180 - fraction * 90));
+          for (let iter = 0; iter < 15; iter++) {
+            const sinDec = sind(eps) * sind(atan2d(sind(ra), cosd(ra) * cosd(eps)));
+            const tanDec = sinDec / Math.sqrt(Math.max(1e-9, 1 - sinDec * sinDec));
+            const ad = asind(Math.max(-0.999, Math.min(0.999, tand(lat) * tanDec)));
+            if (isAboveHorizon) {
+              ra = norm360(ramc + fraction * (90 + ad));
+            } else {
+              ra = norm360(ramc + 180 - fraction * (90 - ad));
+            }
+          }
+          let lonCusp = atan2d(sind(ra), cosd(ra) * cosd(eps));
+          lonCusp = norm360(lonCusp);
+          if (Math.abs(norm180(lonCusp - ra)) > 90) {
+            lonCusp = norm360(lonCusp + 180);
+          }
+          return lonCusp;
+        }
+
+        cusps[11] = placidusCusp(1 / 3, true);
+        cusps[12] = placidusCusp(2 / 3, true);
+        cusps[2]  = placidusCusp(2 / 3, false);
+        cusps[3]  = placidusCusp(1 / 3, false);
+        cusps[5]  = norm360(cusps[11] + 180);
+        cusps[6]  = norm360(cusps[12] + 180);
+        cusps[8]  = norm360(cusps[2] + 180);
+        cusps[9]  = norm360(cusps[3] + 180);
+      }
+
+      return { gmst, lst, asc, mc, cusps };
+    }
+
+    function findHouseForLon(lon, cusps) {
+      for (let h = 1; h <= 12; h++) {
+        const start = cusps[h];
+        const end = cusps[h === 12 ? 1 : h + 1];
+        const span = norm360(end - start);
+        const rel = norm360(lon - start);
+        if (rel >= 0 && rel < span) return h;
+      }
+      return 1;
+    }
+
+    function formatDeg(lon) {
+      const n = norm360(lon);
+      const signIdx = Math.floor(n / 30);
+      const degInSign = n - signIdx * 30;
+      const d = Math.floor(degInSign);
+      const m = Math.floor((degInSign - d) * 60);
+      return {
+        signIdx,
+        sign: SIGNS[signIdx],
+        deg: d,
+        min: m,
+        formatted: `${SIGNS[signIdx].glyph} ${SIGNS[signIdx].name} ${String(d).padStart(2, "0")}°${String(m).padStart(2, "0")}'`
+      };
+    }
+
+    /* =========================================================================
+       4. ASPECTS & ORBS ENGINE
+       ========================================================================= */
+    const ASPECT_DEFS = [
+      { name: "Conjunction", symbol: "☌", angle: 0, orb: 8, nature: "conj",
+        meaning: "Penyatuan langsung dua fungsi psikologis yang saling memperkuat dan tidak terpisahkan." },
+      { name: "Opposition", symbol: "☍", angle: 180, orb: 8, nature: "dyn",
+        meaning: "Polaritas dinamis yang menuntut kesadaran tinggi untuk menyeimbangkan dua kutub yang berseberangan." },
+      { name: "Trine", symbol: "△", angle: 120, orb: 7, nature: "harm",
+        meaning: "Aliran bakat alami dan harmoni konstruktif di mana dua energi saling mendukung tanpa hambatan." },
+      { name: "Square", symbol: "□", angle: 90, orb: 7, nature: "dyn",
+        meaning: "Tegangan kreatif dan gesekan internal yang memaksa pertumbuhan, keputusan, dan tindakan nyata." },
+      { name: "Sextile", symbol: "⚹", angle: 60, orb: 5.5, nature: "harm",
+        meaning: "Peluang kolaborasi dan dialog produktif yang berkembang ketika diaktifkan secara sadar." },
+      { name: "Quincunx", symbol: "⚻", angle: 150, orb: 3, nature: "inc",
+        meaning: "Penyesuaian halus antara dua dimensi yang berbeda elemen dan modalitas sehingga menuntut kalibrasi." }
+    ];
+
+    function computeAspects(bodiesList) {
+      const results = [];
+      for (let i = 0; i < bodiesList.length; i++) {
+        for (let j = i + 1; j < bodiesList.length; j++) {
+          const b1 = bodiesList[i];
+          const b2 = bodiesList[j];
+          // Skip North-South Node trivial opposition
+          if ((b1.key === "NorthNode" && b2.key === "SouthNode") || (b1.key === "SouthNode" && b2.key === "NorthNode")) continue;
+          if (b1.key === "SouthNode" || b2.key === "SouthNode") continue;
+
+          const diff = Math.abs(norm180(b1.lon - b2.lon));
+          for (const asp of ASPECT_DEFS) {
+            const orbVal = Math.abs(diff - asp.angle);
+            const maxOrb = (b1.isPoint || b2.isPoint) ? Math.min(asp.orb, 6) : asp.orb;
+            if (orbVal <= maxOrb) {
+              const orbDeg = Math.floor(orbVal);
+              const orbMin = Math.floor((orbVal - orbDeg) * 60);
+              results.push({
+                b1, b2,
+                aspect: asp,
+                orbVal,
+                orbStr: `${orbDeg}°${String(orbMin).padStart(2, "0")}'`
+              });
+              break;
+            }
+          }
+        }
+      }
+      return results.sort((a, b) => a.orbVal - b.orbVal);
+    }
+
+    /* =========================================================================
+       5. ARCHETYPE SCORING & PSYCHOLOGICAL SYNTHESIS ENGINE
+       ========================================================================= */
+    function scoreArchetypes(planetsMap, angles, houses, elements, modalities) {
+      const scores = {};
+      ARCHETYPES_META.forEach(a => { scores[a.id] = 0; });
+
+      const signToArch = {
+        Aries: ["Hero", "Explorer", "Outlaw"],
+        Taurus: ["Everyman", "Lover", "Creator"],
+        Gemini: ["Sage", "Jester", "Explorer"],
+        Cancer: ["Caregiver", "Lover", "Innocent"],
+        Leo: ["Creator", "Architect", "Hero"],
+        Virgo: ["Sage", "Caregiver", "Architect"],
+        Libra: ["Lover", "Everyman", "Sage"],
+        Scorpio: ["Magician", "Sage", "Architect"],
+        Sagittarius: ["Explorer", "Sage", "Innocent"],
+        Capricorn: ["Architect", "Hero", "Sage"],
+        Aquarius: ["Outlaw", "Sage", "Creator"],
+        Pisces: ["Magician", "Innocent", "Caregiver"]
+      };
+
+      const bodyWeights = {
+        Sun: 18,
+        Moon: 16,
+        ASC: 16,
+        MC: 12,
+        Mercury: 9,
+        Venus: 9,
+        Mars: 10,
+        Jupiter: 8,
+        Saturn: 10,
+        Uranus: 7,
+        Neptune: 7,
+        Pluto: 8
+      };
+
+      const allPoints = [
+        ...Object.values(planetsMap),
+        { key: "ASC", lon: angles.asc },
+        { key: "MC", lon: angles.mc }
+      ];
+
+      allPoints.forEach(pt => {
+        const w = bodyWeights[pt.key] || 0;
+        if (!w) return;
+        const sName = formatDeg(pt.lon).sign.name;
+        const mapped = signToArch[sName];
+        if (mapped) {
+          scores[mapped[0]] += w * 1.0;
+          scores[mapped[1]] += w * 0.55;
+          scores[mapped[2]] += w * 0.3;
+        }
+      });
+
+      // House emphasis bonuses
+      Object.values(planetsMap).forEach(p => {
+        if (p.house === 1 || p.house === 10) scores["Architect"] += 4;
+        if (p.house === 8 || p.house === 12) scores["Magician"] += 5;
+        if (p.house === 9 || p.house === 3) scores["Sage"] += 4;
+        if (p.house === 5) scores["Creator"] += 5;
+        if (p.house === 7) scores["Lover"] += 4;
+        if (p.house === 4 || p.house === 6) scores["Caregiver"] += 4;
+        if (p.house === 11) scores["Outlaw"] += 4;
+      });
+
+      const ranked = ARCHETYPES_META.map(meta => ({
+        ...meta,
+        score: Math.round(scores[meta.id])
+      })).sort((a, b) => b.score - a.score);
+
+      const maxScore = ranked[0].score || 1;
+      return ranked.map((item, idx) => ({
+        ...item,
+        pct: Math.min(100, Math.round((item.score / maxScore) * 100)),
+        tier: idx < 2 ? "Dominan" : idx < 5 ? "Pendukung" : "Kontekstual"
+      }));
+    }
+
+    /* =========================================================================
+       6. SVG NATAL CHART WHEEL RENDERER
+       ========================================================================= */
+    function renderNatalWheel(planetsList, angles, cusps, aspects) {
+      const size = 520;
+      const cx = size / 2;
+      const cy = size / 2;
+      const rOuter = 242;
+      const rZodiacIn = 204;
+      const rHouseIn = 128;
+      const rAspect = 122;
+
+      // Rotate chart so Ascendant is positioned at 9 o'clock (180 degrees in SVG coords)
+      const rotOffset = 180 - angles.asc;
+      function eclToAngleRad(lon) {
+        const deg = norm360(lon + rotOffset);
+        return -deg * DEG2RAD; // Counter-clockwise zodiac progression
+      }
+      function polar(r, lon) {
+        const rad = eclToAngleRad(lon);
+        return {
+          x: cx + r * Math.cos(rad),
+          y: cy + r * Math.sin(rad)
+        };
+      }
+
+      let svg = `<svg viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Natal Chart Wheel">`;
+      svg += `<defs>
+        <radialGradient id="wheelBg" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#1c1c25"/>
+          <stop offset="100%" stop-color="#0f0f14"/>
+        </radialGradient>
+      </defs>`;
+      svg += `<circle cx="${cx}" cy="${cy}" r="${rOuter}" fill="url(#wheelBg)" stroke="#3e3e4d" stroke-width="1.5"/>`;
+      svg += `<circle cx="${cx}" cy="${cy}" r="${rZodiacIn}" fill="none" stroke="#3e3e4d" stroke-width="1.2"/>`;
+      svg += `<circle cx="${cx}" cy="${cy}" r="${rHouseIn}" fill="#121218" stroke="#343442" stroke-width="1.2"/>`;
+
+      // Zodiac 30° sectors & glyphs
+      for (let i = 0; i < 12; i++) {
+        const startLon = i * 30;
+        const midLon = startLon + 15;
+        const p1 = polar(rZodiacIn, startLon);
+        const p2 = polar(rOuter, startLon);
+        svg += `<line x1="${p1.x.toFixed(1)}" y1="${p1.y.toFixed(1)}" x2="${p2.x.toFixed(1)}" y2="${p2.y.toFixed(1)}" stroke="#353542" stroke-width="1"/>`;
+
+        const gPos = polar((rOuter + rZodiacIn) / 2, midLon);
+        const elemColor = SIGNS[i].element === "Api" ? "#e59a7a"
+                        : SIGNS[i].element === "Tanah" ? "#b7c48b"
+                        : SIGNS[i].element === "Udara" ? "#9cc3e6" : "#9c9ee6";
+        svg += `<text x="${gPos.x.toFixed(1)}" y="${gPos.y.toFixed(1)}" fill="${elemColor}" font-size="16" font-family="Georgia, serif" text-anchor="middle" dominant-baseline="central">${SIGNS[i].glyph}</text>`;
+      }
+
+      // House Cusps & Numbers
+      for (let h = 1; h <= 12; h++) {
+        const cLon = cusps[h];
+        const nextLon = cusps[h === 12 ? 1 : h + 1];
+        const isAngle = (h === 1 || h === 4 || h === 7 || h === 10);
+        const pIn = polar(rHouseIn, cLon);
+        const pOut = polar(rZodiacIn, cLon);
+        svg += `<line x1="${pIn.x.toFixed(1)}" y1="${pIn.y.toFixed(1)}" x2="${pOut.x.toFixed(1)}" y2="${pOut.y.toFixed(1)}" stroke="${isAngle ? '#d8b878' : '#2d2d39'}" stroke-width="${isAngle ? '1.8' : '1'}" ${isAngle ? '' : 'stroke-dasharray="3,3"'}/>`;
+
+        const span = norm360(nextLon - cLon);
+        const midHouseLon = norm360(cLon + span / 2);
+        const numPos = polar(rHouseIn + 14, midHouseLon);
+        svg += `<text x="${numPos.x.toFixed(1)}" y="${numPos.y.toFixed(1)}" fill="#8d8880" font-size="10" font-family="Inter, sans-serif" text-anchor="middle" dominant-baseline="central">${h}</text>`;
+      }
+
+      // Aspect Chords inside inner circle
+      aspects.slice(0, 26).forEach(a => {
+        const pA = polar(rAspect, a.b1.lon);
+        const pB = polar(rAspect, a.b2.lon);
+        const color = a.aspect.nature === "conj" ? "#ecd49f"
+                    : a.aspect.nature === "harm" ? "#7ea8d9"
+                    : a.aspect.nature === "dyn" ? "#d97a7a" : "#a78bd6";
+        const opacity = Math.max(0.28, 0.85 - a.orbVal * 0.08);
+        const tip = `${a.b1.nameId} ${a.aspect.symbol} ${a.aspect.name} ${a.b2.nameId} (Orb ${a.orbStr})`.replace(/\\/g, "\\\\").replace(/'/g, "\\'");
+        svg += `<line x1="${pA.x.toFixed(1)}" y1="${pA.y.toFixed(1)}" x2="${pB.x.toFixed(1)}" y2="${pB.y.toFixed(1)}" stroke="${color}" stroke-opacity="${opacity.toFixed(2)}" stroke-width="1.25" style="cursor:pointer" onmouseover="setWheelTip('${tip}')" onclick="setWheelTip('${tip}')"/>`;
+      });
+
+      // Anti-collision radial placement for planet glyphs
+      const sortedBodies = [...planetsList].sort((a, b) => a.lon - b.lon);
+      const placed = [];
+      sortedBodies.forEach(b => {
+        let tier = 0;
+        for (const prev of placed) {
+          if (Math.abs(norm180(b.lon - prev.lon)) < 8.5 && prev.tier === tier) {
+            tier = (tier + 1) % 3;
+          }
+        }
+        placed.push({ ...b, tier });
+      });
+
+      placed.forEach(b => {
+        const rGlyph = 179 - b.tier * 17;
+        const pos = polar(rGlyph, b.lon);
+        const tickOut = polar(rZodiacIn, b.lon);
+        const tickIn = polar(rZodiacIn - 5, b.lon);
+        svg += `<line x1="${tickIn.x.toFixed(1)}" y1="${tickIn.y.toFixed(1)}" x2="${tickOut.x.toFixed(1)}" y2="${tickOut.y.toFixed(1)}" stroke="#d8b878" stroke-width="1.2"/>`;
+
+        const fmt = formatDeg(b.lon);
+        const tip = `${b.nameId} (${b.glyph}) · ${fmt.formatted}${b.retrograde ? ' [Retrograde]' : ''} · Rumah ${b.house}`.replace(/\\/g, "\\\\").replace(/'/g, "\\'");
+        svg += `<g style="cursor:pointer" onmouseover="setWheelTip('${tip}')" onclick="setWheelTip('${tip}')">
+          <circle cx="${pos.x.toFixed(1)}" cy="${pos.y.toFixed(1)}" r="10.5" fill="#181820" stroke="${b.retrograde ? '#d97a7a' : '#d8b878'}" stroke-width="1"/>
+          <text x="${pos.x.toFixed(1)}" y="${pos.y.toFixed(1)}" fill="#f4f1eb" font-size="12" font-family="Georgia, serif" text-anchor="middle" dominant-baseline="central">${b.glyph}</text>
+        </g>`;
+      });
+
+      // Angle Labels (AC, DC, MC, IC)
+      const angleBadges = [
+        { label: "AC", lon: angles.asc },
+        { label: "DC", lon: norm360(angles.asc + 180) },
+        { label: "MC", lon: angles.mc },
+        { label: "IC", lon: norm360(angles.mc + 180) }
+      ];
+      angleBadges.forEach(ab => {
+        const p = polar(rZodiacIn + 18, ab.lon);
+        svg += `<rect x="${(p.x - 12).toFixed(1)}" y="${(p.y - 8).toFixed(1)}" width="24" height="16" rx="4" fill="#d8b878"/>`;
+        svg += `<text x="${p.x.toFixed(1)}" y="${p.y.toFixed(1)}" fill="#101014" font-size="9.5" font-weight="700" font-family="Inter, sans-serif" text-anchor="middle" dominant-baseline="central">${ab.label}</text>`;
+      });
+
+      svg += `</svg>`;
+      return svg;
+    }
+
+    function setWheelTip(text) {
+      const el = document.getElementById("wheelTooltip");
+      if (el) el.textContent = text;
+    }
+
+    /* =========================================================================
+       7. CITY AUTOCOMPLETE, PRESETS & GEOCODING
+       ========================================================================= */
+    const cityInput = document.getElementById("cityInput");
+    const countryInput = document.getElementById("countryInput");
+    const suggestionsBox = document.getElementById("citySuggestions");
+
+    function updateCoordDisplay() {
+      const city = cityInput.value.trim() || "Lokasi Kustom";
+      const country = countryInput.value.trim() || "";
+      const lat = parseFloat(document.getElementById("latInput").value) || 0;
+      const lon = parseFloat(document.getElementById("lonInput").value) || 0;
+      const tz = parseFloat(document.getElementById("tzInput").value) || 0;
+      document.getElementById("dispLocation").textContent = country ? `${city}, ${country}` : city;
+      document.getElementById("dispCoords").textContent = `${lat.toFixed(4)}°, ${lon.toFixed(4)}°`;
+      document.getElementById("dispTz").textContent = `UTC${tz >= 0 ? "+" + tz : tz}`;
+    }
+
+    cityInput.addEventListener("input", () => {
+      const q = cityInput.value.trim().toLowerCase();
+      if (!q) {
+        suggestionsBox.classList.remove("active");
+        return;
+      }
+      const matches = CITIES_DB.filter(c =>
+        c.city.toLowerCase().includes(q) || c.country.toLowerCase().includes(q)
+      ).slice(0, 7);
+
+      if (matches.length === 0) {
+        suggestionsBox.classList.remove("active");
+        return;
+      }
+      suggestionsBox.innerHTML = matches.map((c, idx) => `
+        <div class="city-item" onclick='selectCity(${JSON.stringify(c)})'>
+          <span><strong>${c.city}</strong>, ${c.country}</span>
+          <small>${c.lat.toFixed(2)}°, ${c.lon.toFixed(2)}° · UTC${c.tz >= 0 ? "+" + c.tz : c.tz}</small>
+        </div>
+      `).join("");
+      suggestionsBox.classList.add("active");
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!e.target.closest(".field")) {
+        suggestionsBox.classList.remove("active");
+      }
+    });
+
+    // Auto-format Indonesian Date (DD/MM/YYYY) & 24-Hour Time (00.00 - 23.59)
+    const birthDateInput = document.getElementById("birthDate");
+    const birthTimeInput = document.getElementById("birthTime");
+
+    birthDateInput.addEventListener("input", (e) => {
+      let digits = e.target.value.replace(/\D/g, "").slice(0, 8);
+      if (digits.length >= 5) {
+        e.target.value = `${digits.slice(0, 2)}/${digits.slice(2, 4)}/${digits.slice(4)}`;
+      } else if (digits.length >= 3) {
+        e.target.value = `${digits.slice(0, 2)}/${digits.slice(2)}`;
+      } else {
+        e.target.value = digits;
+      }
+    });
+
+    birthTimeInput.addEventListener("input", (e) => {
+      let digits = e.target.value.replace(/\D/g, "").slice(0, 4);
+      if (digits.length >= 3) {
+        e.target.value = `${digits.slice(0, 2)}.${digits.slice(2)}`;
+      } else {
+        e.target.value = digits;
+      }
+    });
+
+    function parseIndoDate(str) {
+      const m = str.trim().match(/^(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})$/);
+      if (!m) return null;
+      const day = parseInt(m[1], 10);
+      const month = parseInt(m[2], 10);
+      const year = parseInt(m[3], 10);
+      if (month < 1 || month > 12 || day < 1 || day > 31 || year < 1800 || year > 2200) return null;
+      const testDate = new Date(Date.UTC(year, month - 1, day));
+      if (testDate.getUTCFullYear() !== year || testDate.getUTCMonth() !== month - 1 || testDate.getUTCDate() !== day) return null;
+      return {
+        day,
+        month,
+        year,
+        formatted: `${String(day).padStart(2, "0")}/${String(month).padStart(2, "0")}/${year}`
+      };
+    }
+
+    function parse24hTime(str) {
+      const m = str.trim().match(/^(\d{1,2})[\.\:](\d{2})$/);
+      if (!m) return null;
+      const hour = parseInt(m[1], 10);
+      const minute = parseInt(m[2], 10);
+      if (hour < 0 || hour > 23 || minute < 0 || minute > 59) return null;
+      return {
+        hour,
+        minute,
+        formatted: `${String(hour).padStart(2, "0")}.${String(minute).padStart(2, "0")}`
+      };
+    }
+
+    function selectCity(c) {
+      cityInput.value = c.city;
+      countryInput.value = c.country;
+      document.getElementById("latInput").value = c.lat;
+      document.getElementById("lonInput").value = c.lon;
+      document.getElementById("tzInput").value = c.tz;
+      suggestionsBox.classList.remove("active");
+      updateCoordDisplay();
+    }
+
+    ["latInput", "lonInput", "tzInput", "countryInput"].forEach(id => {
+      document.getElementById(id).addEventListener("input", updateCoordDisplay);
+    });
+
+    function toggleAdvanced() {
+      document.getElementById("advancedPanel").classList.toggle("open");
+    }
+
+    async function geocodeOnline() {
+      const city = cityInput.value.trim();
+      const country = countryInput.value.trim();
+      const statusEl = document.getElementById("statusMsg");
+      if (!city) {
+        statusEl.textContent = "Masukkan nama kota terlebih dahulu untuk pencarian koordinat.";
+        statusEl.className = "status-msg error";
+        return;
+      }
+
+      // First check built-in DB exact/partial match
+      const localMatch = CITIES_DB.find(c => c.city.toLowerCase().includes(city.toLowerCase()));
+      if (localMatch && (!country || localMatch.country.toLowerCase().includes(country.toLowerCase()))) {
+        selectCity(localMatch);
+        statusEl.textContent = `Koordinat ditemukan: ${localMatch.city}, ${localMatch.country}.`;
+        statusEl.className = "status-msg";
+        return;
+      }
+
+      statusEl.textContent = "Mencari koordinat geografis melalui OpenStreetMap...";
+      statusEl.className = "status-msg";
+      try {
+        const query = encodeURIComponent(`${city} ${country}`.trim());
+        const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${query}`);
+        const data = await res.json();
+        if (data && data.length > 0) {
+          const lat = parseFloat(data[0].lat);
+          const lon = parseFloat(data[0].lon);
+          const estTz = Math.round(lon / 15);
+          document.getElementById("latInput").value = lat.toFixed(4);
+          document.getElementById("lonInput").value = lon.toFixed(4);
+          document.getElementById("tzInput").value = estTz;
+          updateCoordDisplay();
+          statusEl.textContent = `Koordinat ditemukan (${lat.toFixed(3)}°, ${lon.toFixed(3)}°). Periksa offset UTC jika diperlukan.`;
+        } else {
+          statusEl.textContent = "Kota tidak ditemukan secara otomatis. Silakan isi Lintang, Bujur, dan UTC secara manual.";
+          statusEl.className = "status-msg error";
+          document.getElementById("advancedPanel").classList.add("open");
+        }
+      } catch (err) {
+        statusEl.textContent = "Pencarian online tidak tersedia (offline). Gunakan daftar kota atau input koordinat manual.";
+        statusEl.className = "status-msg error";
+        document.getElementById("advancedPanel").classList.add("open");
+      }
+    }
+
+    function applyPreset(key) {
+      if (key === "surakarta") {
+        document.getElementById("fullName").value = "Muhammad Firman Syah";
+        document.getElementById("callName").value = "Firman";
+        document.getElementById("birthDate").value = "17/08/1998";
+        document.getElementById("birthTime").value = "08.30";
+        selectCity(CITIES_DB[0]);
+      } else if (key === "jakarta") {
+        document.getElementById("fullName").value = "Alya Kirana Putri";
+        document.getElementById("callName").value = "Alya";
+        document.getElementById("birthDate").value = "08/11/1995";
+        document.getElementById("birthTime").value = "21.15";
+        selectCity(CITIES_DB[1]);
+      } else if (key === "tokyo") {
+        document.getElementById("fullName").value = "Renjiro Takahashi";
+        document.getElementById("callName").value = "Ren";
+        document.getElementById("birthDate").value = "21/03/2000";
+        document.getElementById("birthTime").value = "06.00";
+        selectCity(CITIES_DB.find(c => c.city === "Tokyo"));
+      }
+      handleCalculate(null, true);
+    }
+
+    /* =========================================================================
+       7B. NAME VIBRATION ENGINE (5 PILLARS & 4 SUB-DISCIPLINES)
+       ========================================================================= */
+    function reduceToCoreNumber(num) {
+      let n = Math.abs(Math.round(num));
+      while (n > 9 && n !== 11 && n !== 22 && n !== 33) {
+        n = String(n).split("").reduce((acc, d) => acc + Number(d), 0);
+      }
+      return n || 1;
+    }
+
+    function analyzeNameVibration(rawFullName, rawCallName, natalContext) {
+      const cleanFull = (rawFullName || "").trim();
+      const lettersOnly = cleanFull.toUpperCase().replace(/[^A-Z]/g, "");
+      const hasName = lettersOnly.length >= 2;
+      const targetStr = hasName ? lettersOnly : "ASTRONOMEN";
+      const displayFull = hasName ? cleanFull : "Subjek Anonim (Masukkan Nama untuk Analisis Personal)";
+      const words = (hasName ? cleanFull : "Astronomen").split(/\s+/).filter(Boolean);
+      const activeCall = (rawCallName && rawCallName.trim()) ? rawCallName.trim() : (words.length > 1 ? words[Math.min(1, words.length - 1)] : words[0]);
+
+      // Pythagorean + Phonetic Weight Table
+      const letterMap = {
+        A: 1, J: 1, S: 1,
+        B: 2, K: 2, T: 2,
+        C: 3, L: 3, U: 3,
+        D: 4, M: 4, V: 4,
+        E: 5, N: 5, W: 5,
+        F: 6, O: 6, X: 6,
+        G: 7, P: 7, Y: 7,
+        H: 8, Q: 8, Z: 8,
+        I: 9, R: 9
+      };
+
+      const numberProfiles = {
+        1: { title: "Inisiator & Otoritas Mandiri", element: "Api", arch: "The Hero / Architect", freq: "Katalis & Ekspansif", weight: 8,
+             desc: "Frekuensi kepemimpinan tunggal, keberanian merintis jalan, dan kemandirian tinggi. Membutuhkan ketegasan agar tidak berubah menjadi isolasi." },
+        2: { title: "Mediator & Resonansi Empatik", element: "Air", arch: "The Lover / Caregiver", freq: "Reflektif & Harmonis", weight: 5,
+             desc: "Frekuensi diplomasi, kepekaan terhadap ritme orang lain, dan kemampuan menyatukan polaritas secara halus." },
+        3: { title: "Ekspresif & Katalis Artikulasi", element: "Udara", arch: "The Creator / Jester", freq: "Ekspansif & Dinamis", weight: 6,
+             desc: "Frekuensi kreativitas verbal, optimisme sosial, dan daya hidup yang menghidupkan ruang komunikasi." },
+        4: { title: "Arsitek Struktur & Ketahanan", element: "Tanah", arch: "The Architect / Everyman", freq: "Stabil & Membumi", weight: 7,
+             desc: "Frekuensi keteraturan, disiplin praktis, dan pembangunan fondasi jangka panjang yang kokoh." },
+        5: { title: "Eksplorer & Agen Perubahan", element: "Udara", arch: "The Explorer / Outlaw", freq: "Katalis & Adaptif", weight: 7,
+             desc: "Frekuensi kebebasan gerak, kelincahan intelektual, dan keberanian melampaui batas konvensi." },
+        6: { title: "Penjaga Harmoni & Tanggung Jawab", element: "Tanah", arch: "The Caregiver / Lover", freq: "Stabil & Protektif", weight: 6,
+             desc: "Frekuensi pengayoman, estetika nilai, dan komitmen mendalam terhadap keluarga maupun komunitas." },
+        7: { title: "Kontemplator & Pencari Hakikat", element: "Air", arch: "The Sage / Magician", freq: "Reflektif & Mendalam", weight: 8,
+             desc: "Frekuensi analisis tajam, kedalaman spiritual-filosofis, dan pencarian kebenaran di balik permukaan." },
+        8: { title: "Manifes Kuasa & Eksekusi Material", element: "Tanah", arch: "The Architect / Hero", freq: "Ekspansif & Otoritatif", weight: 9,
+             desc: "Frekuensi ambisi besar, ketahanan menghadapi tekanan, dan kemampuan mengelola skala sistem maupun sumber daya." },
+        9: { title: "Humanis & Sintesis Universal", element: "Api", arch: "The Magician / Sage", freq: "Ekspansif & Transenden", weight: 8,
+             desc: "Frekuensi kebijaksanaan luas, belas kasih kolektif, dan kemampuan menyelesaikan siklus besar." },
+        11: { title: "Master Intuisi & Iluminasi", element: "Udara", arch: "The Magician / Visionary", freq: "Katalis Tinggi", weight: 9.5,
+              desc: "Bilangan induk bertegangan tinggi: kepekaan intuitif tajam dan daya inspirasi visioner. Rentan ketegangan saraf bila tidak membumi." },
+        22: { title: "Master Arsitek Peradaban", element: "Tanah", arch: "The Architect", freq: "Stabil-Ekspansif Tinggi", weight: 10,
+              desc: "Bilangan induk dengan kapasitas mewujudkan visi besar menjadi struktur nyata. Membutuhkan wadah mental dan disiplin yang sangat matang." },
+        33: { title: "Master Pengayom & Transformasi", element: "Air", arch: "The Caregiver / Magician", freq: "Reflektif Tinggi", weight: 9.5,
+              desc: "Bilangan induk pelayanan kesadaran dan penyembuhan kolektif dengan beban tanggung jawab moral yang tinggi." }
+      };
+
+      const vowelsSet = new Set(["A", "I", "U", "E", "O"]);
+      const openVowels = new Set(["A", "O"]);     // Frekuensi artikulasi terbuka/ekspansif
+      const frontVowels = new Set(["E", "I"]);    // Frekuensi artikulasi tajam/reflektif
+      const plosives = new Set(["B", "P", "D", "T", "G", "K"]); // Konsonan hentian (tegas/katalis)
+      const sonorants = new Set(["M", "N", "L", "R", "W", "Y"]); // Konsonan alir (stabil/harmonis)
+
+      let totalSum = 0, vowelSum = 0, consSum = 0;
+      let vCount = 0, cCount = 0, openCount = 0, frontCount = 0, plosiveCount = 0, sonorantCount = 0;
+
+      for (const ch of targetStr) {
+        const val = letterMap[ch] || 0;
+        totalSum += val;
+        if (vowelsSet.has(ch)) {
+          vowelSum += val;
+          vCount++;
+          if (openVowels.has(ch)) openCount++;
+          if (frontVowels.has(ch)) frontCount++;
+        } else {
+          consSum += val;
+          cCount++;
+          if (plosives.has(ch)) plosiveCount++;
+          if (sonorants.has(ch)) sonorantCount++;
+        }
+      }
+
+      const coreNum = reduceToCoreNumber(totalSum);
+      const soulNum = reduceToCoreNumber(vowelSum);
+      const outerNum = reduceToCoreNumber(consSum);
+      const coreProf = numberProfiles[coreNum] || numberProfiles[1];
+      const soulProf = numberProfiles[soulNum] || numberProfiles[1];
+      const outerProf = numberProfiles[outerNum] || numberProfiles[1];
+
+      // Anchor Points (Initial & Final letters)
+      const firstLetter = targetStr[0];
+      const lastLetter = targetStr[targetStr.length - 1];
+      const firstVal = letterMap[firstLetter] || 1;
+      const lastVal = letterMap[lastLetter] || 1;
+
+      // Sub-Ilmu 1: Fonetika Resonansi
+      const totalChars = targetStr.length;
+      const vowelRatio = Math.round((vCount / totalChars) * 100);
+      const consRatio = 100 - vowelRatio;
+      let acousticProfile = "Seimbang (Harmonis-Adaptif)";
+      if (openCount >= frontCount && plosiveCount >= sonorantCount) {
+        acousticProfile = "Ekspansif & Katalis (Artikulasi Terbuka + Hentian Tegas)";
+      } else if (sonorantCount > plosiveCount && vowelRatio >= 40) {
+        acousticProfile = "Stabil & Resonan (Aliran Sonoran Halus)";
+      } else if (frontCount > openCount && consRatio > 58) {
+        acousticProfile = "Reflektif & Presisi (Fokus Konsonan Tajam)";
+      }
+
+      // Hukum Interferensi (Internal Dynamics between Soul Vowels, Outer Consonants, and Anchors)
+      const elemCompat = {
+        Api: { Api: "Resonansi Konstruktif", Udara: "Resonansi Konstruktif", Tanah: "Tegangan Produktif", Air: "Disonansi Internal" },
+        Tanah: { Tanah: "Resonansi Konstruktif", Air: "Resonansi Konstruktif", Api: "Tegangan Produktif", Udara: "Disonansi Internal" },
+        Udara: { Udara: "Resonansi Konstruktif", Api: "Resonansi Konstruktif", Air: "Tegangan Produktif", Tanah: "Disonansi Internal" },
+        Air: { Air: "Resonansi Konstruktif", Tanah: "Resonansi Konstruktif", Udara: "Tegangan Produktif", Api: "Disonansi Internal" }
+      };
+      const interferenceType = elemCompat[soulProf.element][outerProf.element];
+      const interferenceDesc = interferenceType === "Resonansi Konstruktif"
+        ? `Motif batin (${soulProf.element} · Angka ${soulNum}) dan citra luar (${outerProf.element} · Angka ${outerNum}) searah dan saling memperkuat.`
+        : interferenceType === "Tegangan Produktif"
+        ? `Dorongan batin (${soulProf.element} · Angka ${soulNum}) menekan ekspresi luar (${outerProf.element} · Angka ${outerNum}) untuk mengubah gagasan menjadi eksekusi nyata.`
+        : `Ada gesekan antara motif batin (${soulProf.element} · Angka ${soulNum}) dan citra luar (${outerProf.element} · Angka ${outerNum}) yang dapat memicu tarik-menarik batin bila dibiarkan.`;
+
+      // Sub-Ilmu 3 & 4: Kalibrasi Keselarasan Wadah (Natal Capacity vs Name Load)
+      const isMaster = coreNum === 11 || coreNum === 22 || coreNum === 33;
+      const natalElemMatch = natalContext.domElement === coreProf.element ||
+        elemCompat[natalContext.domElement][coreProf.element] === "Resonansi Konstruktif";
+
+      let calibrationStatus = "Selaras & Proporsional";
+      let calibrationColor = "var(--emerald)";
+      let calibrationAdvice = `Beban vibrasi nama (Angka Induk ${coreNum} · Elemen ${coreProf.element}) sesuai dengan wadah temperamen natal (${natalContext.domElement} · ${natalContext.domModality}) dan mendukung peran ${natalContext.topArchetype}.`;
+
+      if (isMaster && !natalElemMatch) {
+        calibrationStatus = "Waspada Overload (Indikasi Kabotan Jeneng)";
+        calibrationColor = "var(--crimson)";
+        calibrationAdvice = `Nama memuat frekuensi Bilangan Induk (${coreNum}) berelemen ${coreProf.element}, sedangkan peta lahir dominan pada elemen ${natalContext.domElement}. Tanpa struktur dan pijakan yang kuat, beban ini mudah memicu kelelahan mental atau tekanan ekspektasi.`;
+      } else if (!natalElemMatch) {
+        calibrationStatus = "Perlu Kalibrasi Kontekstual";
+        calibrationColor = "var(--gold-light)";
+        calibrationAdvice = `Nama menonjolkan elemen ${coreProf.element} (Angka ${coreNum}), sementara peta lahir berpusat pada ${natalContext.domElement}. Nama bekerja sebagai penyeimbang yang melatih sisi non-dominan.`;
+      }
+
+      // Active Call Name (Moniker) Analysis
+      const callLetters = activeCall.toUpperCase().replace(/[^A-Z]/g, "") || targetStr;
+      const callSum = callLetters.split("").reduce((acc, ch) => acc + (letterMap[ch] || 0), 0);
+      const callNum = reduceToCoreNumber(callSum);
+      const callProf = numberProfiles[callNum] || numberProfiles[1];
+
+      // Generate shorter strategic nickname/moniker calibration suggestion
+      const firstWord = words[0] || "Subjek";
+      const lastWord = words[words.length - 1] || firstWord;
+      const recommendedMoniker = natalElemMatch
+        ? activeCall
+        : (words.length > 1 ? `${firstWord.slice(0, 4)} / ${lastWord}` : firstWord);
+
+      return {
+        hasName,
+        displayFull,
+        activeCall,
+        totalChars,
+        wordCount: words.length,
+        vowelRatio,
+        consRatio,
+        openCount,
+        frontCount,
+        plosiveCount,
+        sonorantCount,
+        acousticProfile,
+        coreNum,
+        soulNum,
+        outerNum,
+        coreProf,
+        soulProf,
+        outerProf,
+        firstLetter,
+        lastLetter,
+        firstVal,
+        lastVal,
+        interferenceType,
+        interferenceDesc,
+        calibrationStatus,
+        calibrationColor,
+        calibrationAdvice,
+        callNum,
+        callProf,
+        recommendedMoniker
+      };
+    }
+
+    function renderNameVibrationSection(nv, natalContext) {
+      const container = document.getElementById("nameVibrationContainer");
+      if (!container) return;
+
+      container.innerHTML = `
+        <!-- Top Calibration Banner -->
+        <div class="exec-banner" style="margin-bottom:22px;">
+          <div class="exec-item">
+            <small>Subjek &amp; Panggilan Aktif</small>
+            <strong>${nv.displayFull}</strong>
+            <span>Panggilan: "${nv.activeCall}" (${nv.totalChars} huruf)</span>
+          </div>
+          <div class="exec-item">
+            <small>Kode Induk &amp; Elemen Nama</small>
+            <strong>Angka ${nv.coreNum} · ${nv.coreProf.element}</strong>
+            <span>${nv.coreProf.title}</span>
+          </div>
+          <div class="exec-item">
+            <small>Hukum Interferensi</small>
+            <strong>${nv.interferenceType}</strong>
+            <span>Batin ${nv.soulNum} (${nv.soulProf.element}) ↔ Luar ${nv.outerNum} (${nv.outerProf.element})</span>
+          </div>
+          <div class="exec-item">
+            <small>Kalibrasi Wadah Lahir</small>
+            <strong style="color:${nv.calibrationColor};">${nv.calibrationStatus}</strong>
+            <span>Chart: ${natalContext.domElement} / ${natalContext.domModality}</span>
+          </div>
+        </div>
+
+        <!-- 4 Cabang Sub-Ilmu Grid -->
+        <div class="synthesis-grid" style="margin-bottom:22px;">
+          <article class="synth-card">
+            <div>
+              <div class="synth-num">01 · Fonetika Resonansi (Akustik Nama)</div>
+              <h4>${nv.acousticProfile}</h4>
+              <p>
+                <strong>1. Rasio Vokal–Konsonan:</strong> Komposisi <strong>${nv.vowelRatio}% vokal</strong> (aliran &amp; keterbukaan suara) dan <strong>${nv.consRatio}% konsonan</strong> (artikulasi &amp; batas bunyi) membentuk karakter vokal nama saat dilafalkan.
+              </p>
+              <p>
+                <strong>2. Anatomi Artikulasi:</strong> Tercatat <strong>${nv.openCount} vokal terbuka (A/O)</strong>, <strong>${nv.frontCount} vokal tajam (E/I)</strong>, <strong>${nv.plosiveCount} konsonan hentian</strong>, dan <strong>${nv.sonorantCount} konsonan alir</strong>. Pola ini menentukan apakah bunyi nama terdengar tegas menghentak, mengalir halus, atau tajam terukur.
+              </p>
+            </div>
+            <div class="synth-highlight">Profil Akustik: ${nv.coreProf.freq} · Fokus artikulasi pada "${nv.activeCall}".</div>
+          </article>
+
+          <article class="synth-card">
+            <div>
+              <div class="synth-num">02 · Matriks Kriptografi Nama (Struktur Kode)</div>
+              <h4>Kode Induk ${nv.coreNum} · Jangkar ${nv.firstLetter}(${nv.firstVal}) → ${nv.lastLetter}(${nv.lastVal})</h4>
+              <p>
+                <strong>1. Lapisan Batin (Vokal · Angka ${nv.soulNum} · ${nv.soulProf.element}):</strong> Menunjukkan dorongan motivasi internal pada pola <em>${nv.soulProf.title.toLowerCase()}</em>.
+              </p>
+              <p>
+                <strong>2. Citra Luar (Konsonan · Angka ${nv.outerNum} · ${nv.outerProf.element}):</strong> Menunjukkan pola tampilan terstruktur dan cara kerja di ruang publik.
+              </p>
+              <p>
+                <strong>3. Titik Jangkar Awal–Akhir:</strong> Awalan <strong>${nv.firstLetter} (${nv.firstVal})</strong> menandai cara membuka langkah, sedangkan akhiran <strong>${nv.lastLetter} (${nv.lastVal})</strong> menandai pola penutupan dan hasil akhir siklus.
+              </p>
+            </div>
+            <div class="synth-highlight">Interferensi: ${nv.interferenceDesc}</div>
+          </article>
+
+          <article class="synth-card">
+            <div>
+              <div class="synth-num">03 · Psiko-Semantika &amp; Keselarasan Wadah</div>
+              <h4>Arketipe Nama: ${nv.coreProf.arch}</h4>
+              <p>
+                <strong>1. Beban &amp; Daya Dorong Makna:</strong> ${nv.coreProf.desc}
+              </p>
+              <p>
+                <strong>2. Uji Kapasitas Wadah (Natal vs Nama):</strong> Dipadukan dengan arketipe utama peta lahir <strong>${natalContext.topArchetype}</strong>, keseimbangan antara kapasitas diri dan frekuensi nama menentukan seberapa mulus energi ini terwujud tanpa memicu kelelahan.
+              </p>
+            </div>
+            <div class="synth-highlight">Kalibrasi Wadah: ${nv.calibrationAdvice}</div>
+          </article>
+
+          <article class="synth-card">
+            <div>
+              <div class="synth-num">04 · Rekayasa &amp; Harmonisasi Nama</div>
+              <h4>Panggilan Aktif: "${nv.activeCall}" (Kode ${nv.callNum})</h4>
+              <p>
+                <strong>1. Dinamika Panggilan Harian:</strong> Panggilan <strong>"${nv.activeCall}"</strong> membawa frekuensi <strong>${nv.callProf.element} (${nv.callProf.title})</strong> dalam interaksi sehari-hari yang bisa berbeda dari kode nama lengkap.
+              </p>
+              <p>
+                <strong>2. Penyelarasan Praktis:</strong> Gunakan nama lengkap untuk komitmen formal dan identitas struktural, serta manfaatkan panggilan <strong>"${nv.recommendedMoniker}"</strong> untuk menjaga keseimbangan ritme elemen <strong>${natalContext.domElement}</strong> dalam aktivitas harian.
+              </p>
+            </div>
+            <div class="synth-highlight">Rekomendasi Moniker: "${nv.recommendedMoniker}" · Frekuensi ${nv.callProf.freq}.</div>
+          </article>
+        </div>
+
+        <!-- 5 Inti Poin Keilmuan Reference Card -->
+        <div class="balance-box" style="border:1px solid var(--line);">
+          <h4>Lima Pilar Kerangka Vibrasi Nama ASTRONOMEN</h4>
+          <div class="dom-stat"><span>1. Ontologi Vibrasi</span><strong>Bunyi dan kode simbolik nama memengaruhi respons psikologis serta pola perilaku sehari-hari.</strong></div>
+          <div class="dom-stat"><span>2. Struktur Tiga Lapis</span><strong>Dipetakan melalui Fonetik (suara), Simbolik/Numerik (kode &amp; elemen), dan Semantik (makna).</strong></div>
+          <div class="dom-stat"><span>3. Hukum Interferensi</span><strong>Kombinasi unsur membentuk Resonansi Konstruktif, Tegangan Produktif, atau Disonansi Internal.</strong></div>
+          <div class="dom-stat"><span>4. Keselarasan Wadah</span><strong>Kekuatan nama perlu sesuai kapasitas bawaan lahir agar tidak memicu overload (kabotan jeneng).</strong></div>
+          <div class="dom-stat"><span>5. Relasionalitas Kontekstual</span><strong>Getaran aktif berubah sesuai panggilan yang dipakai serta konteks relasi dan lingkungan.</strong></div>
+        </div>
+      `;
+    }
+
+    /* =========================================================================
+       8. MAIN CALCULATION & EDITORIAL REPORT ORCHESTRATOR
+       ========================================================================= */
+    async function handleCalculate(e, shouldScroll = true) {
+      if (e) e.preventDefault();
+      const statusEl = document.getElementById("statusMsg");
+      statusEl.className = "status-msg";
+
+      const dateStr = document.getElementById("birthDate").value;
+      const timeStr = document.getElementById("birthTime").value;
+      const parsedDate = parseIndoDate(dateStr);
+      const parsedTime = parse24hTime(timeStr);
+
+      if (!parsedDate) {
+        statusEl.textContent = "Format tanggal lahir tidak valid. Gunakan DD/MM/YYYY (contoh: 17/08/1998).";
+        statusEl.className = "status-msg error";
+        return;
+      }
+
+      if (!parsedTime) {
+        statusEl.textContent = "Format jam lahir tidak valid. Gunakan format 24 jam 00.00–23.59 (contoh: 08.30 atau 21.45).";
+        statusEl.className = "status-msg error";
+        return;
+      }
+
+      // Normalize input display to clean DD/MM/YYYY and HH.MM
+      document.getElementById("birthDate").value = parsedDate.formatted;
+      document.getElementById("birthTime").value = parsedTime.formatted;
+
+      // If user typed a city name without clicking dropdown, match from DB or geocode
+      const typedCity = cityInput.value.trim();
+      const dispLoc = document.getElementById("dispLocation").textContent;
+      if (typedCity && !dispLoc.toLowerCase().startsWith(typedCity.toLowerCase())) {
+        const found = CITIES_DB.find(c => c.city.toLowerCase().includes(typedCity.toLowerCase()));
+        if (found) {
+          selectCity(found);
+        } else {
+          await geocodeOnline();
+        }
+      }
+
+      const { year, month, day } = parsedDate;
+      const { hour, minute } = parsedTime;
+      const lat = parseFloat(document.getElementById("latInput").value);
+      const lon = parseFloat(document.getElementById("lonInput").value);
+      const tz = parseFloat(document.getElementById("tzInput").value);
+      const houseSystem = document.getElementById("houseSystem").value;
+
+      // Convert Local Time to Universal Time (UT)
+      const localHour = hour + minute / 60.0;
+      const utHour = localHour - tz;
+      const jd = toJulianDay(year, month, day, utHour);
+      // Compute bodies at JD - 0.5d, JD, and JD + 0.5d (centered daily velocity for accurate Rx detection)
+      const posPrev = computeBodiesAtJD(jd - 0.5);
+      const posNow = computeBodiesAtJD(jd);
+      const posNext = computeBodiesAtJD(jd + 0.5);
+      const angles = computeAnglesAndHouses(jd, lat, lon, posNow.eps, houseSystem);
+
+      const BODY_DEFS = [
+        { key: "Sun", nameId: "Matahari (Sun)", glyph: "☉", role: "Identitas Inti & Vitalitas" },
+        { key: "Moon", nameId: "Bulan (Moon)", glyph: "☽", role: "Dunia Batin & Kebutuhan Emosional" },
+        { key: "Mercury", nameId: "Merkurius", glyph: "☿", role: "Pola Pikir, Bahasa & Persepsi" },
+        { key: "Venus", nameId: "Venus", glyph: "♀", role: "Nilai, Estetika & Keterikatan" },
+        { key: "Mars", nameId: "Mars", glyph: "♂", role: "Dorongan Aksi, Keberanian & Batas" },
+        { key: "Jupiter", nameId: "Jupiter", glyph: "♃", role: "Ekspansi, Makna & Kebijaksanaan" },
+        { key: "Saturn", nameId: "Saturnus", glyph: "♄", role: "Struktur, Disiplin & Ujian Waktu" },
+        { key: "Uranus", nameId: "Uranus", glyph: "♅", role: "Inovasi, Pembebasan & Orisinalitas" },
+        { key: "Neptune", nameId: "Neptunus", glyph: "♆", role: "Imajinasi, Empati & Transendensi" },
+        { key: "Pluto", nameId: "Pluto", glyph: "♇", role: "Transformasi, Kuasa Batin & Regenerasi" },
+        { key: "NorthNode", nameId: "North Node (Rahu)", glyph: "☊", role: "Arah Evolusi & Pertumbuhan Jiwa" },
+        { key: "SouthNode", nameId: "South Node (Ketu)", glyph: "☋", role: "Memori Bawaan & Pola Zona Nyaman" }
+      ];
+
+      const planetsMap = {};
+      const planetsList = BODY_DEFS.map(def => {
+        const lonVal = posNow[def.key];
+        const vel = norm180(posNext[def.key] - posPrev[def.key]);
+        const isRx = def.key !== "Sun" && def.key !== "Moon" && vel < 0;
+        const house = findHouseForLon(lonVal, angles.cusps);
+        const obj = { ...def, lon: lonVal, vel, retrograde: isRx, house, fmt: formatDeg(lonVal) };
+        planetsMap[def.key] = obj;
+        return obj;
+      });
+
+      // Include ASC & MC in aspect calculations
+      const aspectBodies = [
+        ...planetsList,
+        { key: "ASC", nameId: "Ascendant (ASC)", glyph: "AC", lon: angles.asc, isPoint: true },
+        { key: "MC", nameId: "Midheaven (MC)", glyph: "MC", lon: angles.mc, isPoint: true }
+      ];
+      const aspects = computeAspects(aspectBodies);
+
+      // Element, Modality, Polarity weighted distribution
+      const elemScores = { Api: 0, Tanah: 0, Udara: 0, Air: 0 };
+      const modScores = { Cardinal: 0, Fixed: 0, Mutable: 0 };
+      const polScores = { Yang: 0, Yin: 0 };
+
+      const weights = { Sun: 4, Moon: 4, ASC: 4, MC: 2, Mercury: 2, Venus: 2, Mars: 2, Jupiter: 1.5, Saturn: 1.5, Uranus: 1, Neptune: 1, Pluto: 1 };
+      aspectBodies.forEach(b => {
+        const w = weights[b.key] || 0;
+        if (!w) return;
+        const s = formatDeg(b.lon).sign;
+        elemScores[s.element] += w;
+        modScores[s.modality] += w;
+        polScores[s.polarity] += w;
+      });
+
+      const totalW = Object.values(elemScores).reduce((a, b) => a + b, 0) || 1;
+      const ascFmt = formatDeg(angles.asc);
+      const mcFmt = formatDeg(angles.mc);
+      const chartRulerName = ascFmt.sign.ruler;
+      const chartRulerObj = Object.values(planetsMap).find(p => p.nameId.includes(chartRulerName)) || planetsMap.Sun;
+
+      const archetypes = scoreArchetypes(planetsMap, angles, angles.cusps, elemScores, modScores);
+      const domElement = Object.entries(elemScores).sort((a, b) => b[1] - a[1])[0][0];
+      const domModality = Object.entries(modScores).sort((a, b) => b[1] - a[1])[0][0];
+
+      // Compute Name Vibration early so it can feed the Core Awareness Insight Card
+      const rawFullName = document.getElementById("fullName").value;
+      const rawCallName = document.getElementById("callName").value;
+      const natalContext = {
+        domElement,
+        domModality,
+        topArchetype: archetypes[0].name,
+        secondArchetype: archetypes[1].name
+      };
+      const nameVibrationData = analyzeNameVibration(rawFullName, rawCallName, natalContext);
+
+      // Populate UI
+      document.getElementById("resSubjectName").textContent = nameVibrationData.hasName ? nameVibrationData.displayFull : "Peta Kesadaran ASTRONOMEN";
+      document.getElementById("resSubjectMeta").textContent =
+        `${parsedDate.formatted} · Pukul ${parsedTime.formatted} (UTC${tz >= 0 ? "+" + tz : tz}) · ${document.getElementById("dispLocation").textContent} · Panggilan Aktif: "${nameVibrationData.activeCall}"`;
+
+      // Big Three Cards
+      const sunSign = planetsMap.Sun.fmt.sign;
+      const moonSign = planetsMap.Moon.fmt.sign;
+      const ascSign = ascFmt.sign;
+
+      // Executive Summary Strip
+      document.getElementById("execBanner").innerHTML = `
+        <div class="exec-item">
+          <small>Arketipe Inti Langit</small>
+          <strong>${archetypes[0].name}</strong>
+          <span>Pendukung: ${archetypes[1].name}</span>
+        </div>
+        <div class="exec-item">
+          <small>Kode Vibrasi Nama</small>
+          <strong>Angka ${nameVibrationData.coreNum} · ${nameVibrationData.coreProf.element}</strong>
+          <span>${nameVibrationData.coreProf.arch}</span>
+        </div>
+        <div class="exec-item">
+          <small>Tanda Utama (Big Three)</small>
+          <strong>${sunSign.glyph} ${sunSign.name} · ${moonSign.glyph} ${moonSign.name}</strong>
+          <span>Ascendant: ${ascSign.glyph} ${ascSign.name}</span>
+        </div>
+        <div class="exec-item">
+          <small>Keselarasan Wadah &amp; Nama</small>
+          <strong style="color:${nameVibrationData.calibrationColor}; font-size:18px;">${nameVibrationData.calibrationStatus}</strong>
+          <span>Wadah ${domElement} ↔ Nama ${nameVibrationData.coreProf.element}</span>
+        </div>
+      `;
+
+      // Stage 00: Core Awareness & Insight Synthesis Card
+      document.getElementById("insightBadge").textContent = `${domElement} · ${domModality} · Kode Nama ${nameVibrationData.coreNum}`;
+      document.getElementById("insightGrid").innerHTML = `
+        <div class="insight-pillar">
+          <small>1. Cetak Biru Kelahiran</small>
+          <p>
+            Kombinasi <strong>Matahari di ${sunSign.name}</strong>, <strong>Bulan di ${moonSign.name}</strong>, dan <strong>Ascendant ${ascSign.name}</strong> mengarah pada arketipe dominan <strong>${archetypes[0].name}</strong>. Kekuatan utama berada pada ${sunSign.keyword}, dengan kebutuhan emosional berpusat pada ${moonSign.keyword}.
+          </p>
+        </div>
+        <div class="insight-pillar">
+          <small>2. Karakter Vibrasi Nama</small>
+          <p>
+            Nama <strong>${nameVibrationData.hasName ? nameVibrationData.displayFull : "Subjek"}</strong> membawa <strong>Kode Induk ${nameVibrationData.coreNum} (${nameVibrationData.coreProf.element})</strong> dengan pola bunyi <em>${nameVibrationData.acousticProfile.split("(")[0].trim()}</em>. Panggilan <strong>"${nameVibrationData.activeCall}"</strong> beroperasi pada frekuensi ${nameVibrationData.callProf.freq.toLowerCase()}.
+          </p>
+        </div>
+        <div class="insight-pillar">
+          <small>3. Titik Kritis &amp; Arah Fokus</small>
+          <p>
+            Status kalibrasi saat ini adalah <strong>${nameVibrationData.calibrationStatus}</strong>. Titik rawan utama terletak pada ${sunSign.shadow.replace(/\.$/, "")}, sementara fokus pengembangan jangka panjang mengarah ke <strong>North Node ${planetsMap.NorthNode.fmt.sign.name} (Rumah ${planetsMap.NorthNode.house})</strong>.
+          </p>
+        </div>
+      `;
+
+      document.getElementById("bigThreeGrid").innerHTML = `
+        <article class="triad-card" data-glyph="${sunSign.glyph}">
+          <div class="triad-role">☉ Sun Sign · Identitas Inti</div>
+          <div class="triad-title">${sunSign.glyph} ${sunSign.name}</div>
+          <div class="triad-deg">${planetsMap.Sun.fmt.formatted} · Rumah ${planetsMap.Sun.house}</div>
+          <p class="triad-desc">Pusat kesadaran dan tujuan hidup yang berakar pada ${sunSign.keyword}.</p>
+        </article>
+        <article class="triad-card" data-glyph="${moonSign.glyph}">
+          <div class="triad-role">☽ Moon Sign · Dunia Batin</div>
+          <div class="triad-title">${moonSign.glyph} ${moonSign.name}</div>
+          <div class="triad-deg">${planetsMap.Moon.fmt.formatted} · Rumah ${planetsMap.Moon.house}</div>
+          <p class="triad-desc">Arsitektur emosi, memori batin, dan kebutuhan rasa aman melalui ${moonSign.keyword}.</p>
+        </article>
+        <article class="triad-card" data-glyph="${ascSign.glyph}">
+          <div class="triad-role">AC Ascendant · Gerbang Persona</div>
+          <div class="triad-title">${ascSign.glyph} ${ascSign.name}</div>
+          <div class="triad-deg">${ascFmt.formatted} · Penguasa: ${chartRulerName}</div>
+          <p class="triad-desc">Cara diri menyapa dunia luar: ${ascSign.persona}</p>
+        </article>
+      `;
+
+      // Render SVG Wheel
+      document.getElementById("natalWheelContainer").innerHTML = renderNatalWheel(planetsList, angles, angles.cusps, aspects);
+
+      // Populate Ephemeris Table
+      const tableRows = [
+        ...planetsList.map(p => `
+          <tr>
+            <td><strong>${p.glyph} ${p.nameId}</strong><br><small style="color:var(--muted)">${p.role}</small></td>
+            <td>${p.fmt.formatted}${p.retrograde ? '<span class="rx-badge" title="Gerak semu mundur (internal/reflektif)">Rx</span>' : ''}</td>
+            <td>Rumah ${p.house}</td>
+            <td>${p.retrograde ? '<span style="color:var(--crimson); font-weight:500;" title="Energi bekerja lebih reflektif & internal">Retrograde</span>' : '<span style="color:var(--emerald); font-weight:500;" title="Energi diekspresikan langsung ke luar">Direct</span>'}</td>
+          </tr>
+        `),
+        `<tr>
+          <td><strong>AC Ascendant</strong><br><small style="color:var(--muted)">Cusp Rumah I · Horizon Timur</small></td>
+          <td>${ascFmt.formatted}</td>
+          <td>Rumah 1</td>
+          <td><span style="color:var(--gold)">Sudut Utama</span></td>
+        </tr>`,
+        `<tr>
+          <td><strong>MC Midheaven</strong><br><small style="color:var(--muted)">Cusp Rumah X · Puncak Langit</small></td>
+          <td>${mcFmt.formatted}</td>
+          <td>Rumah 10</td>
+          <td><span style="color:var(--gold)">Sudut Utama</span></td>
+        </tr>`
+      ];
+      document.getElementById("planetTableBody").innerHTML = tableRows.join("");
+
+      // Populate 12 Houses Grid
+      document.getElementById("activeHouseLabel").textContent =
+        houseSystem === "placidus" ? "Placidus" : houseSystem === "wholesign" ? "Whole Sign" : "Equal House";
+
+      document.getElementById("housesGrid").innerHTML = HOUSE_THEMES.map(ht => {
+        const cFmt = formatDeg(angles.cusps[ht.num]);
+        const occupants = planetsList.filter(p => p.house === ht.num).map(p => `${p.glyph} ${p.nameId.split(" ")[0]}`);
+        return `
+          <div class="house-card">
+            <div class="house-top">
+              <span class="house-num">Rumah ${ht.num}</span>
+              <span class="house-sign">${cFmt.formatted}</span>
+            </div>
+            <div class="house-theme">${ht.area}</div>
+            <div class="house-occupants">${occupants.length ? "Penghuni: " + occupants.join(", ") : "Tidak ada planet penghuni"}</div>
+          </div>
+        `;
+      }).join("");
+
+      // Populate Balance & Dominance
+      const renderBars = (obj) => Object.entries(obj).map(([k, v]) => {
+        const pct = Math.round((v / totalW) * 100);
+        return `
+          <div class="bar-row">
+            <div class="bar-label"><span>${k}</span><span>${pct}%</span></div>
+            <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
+          </div>
+        `;
+      }).join("");
+
+      document.getElementById("balanceGrid").innerHTML = `
+        <div class="balance-box">
+          <h4>Distribusi 4 Elemen</h4>
+          ${renderBars(elemScores)}
+        </div>
+        <div class="balance-box">
+          <h4>Modalitas &amp; Polaritas</h4>
+          ${renderBars(modScores)}
+          <div style="margin-top:14px; padding-top:12px; border-top:1px solid var(--line-soft);">
+            ${renderBars(polScores)}
+          </div>
+        </div>
+        <div class="balance-box">
+          <h4>Dominasi &amp; Penguasa Chart</h4>
+          <div class="dom-stat"><span>Chart Ruler</span><strong>${chartRulerObj.glyph} ${chartRulerObj.nameId} di ${chartRulerObj.fmt.sign.name} (R.${chartRulerObj.house})</strong></div>
+          <div class="dom-stat"><span>Elemen Dominan</span><strong>${domElement}</strong></div>
+          <div class="dom-stat"><span>Modalitas Dominan</span><strong>${domModality}</strong></div>
+          <div class="dom-stat"><span>Midheaven (MC)</span><strong>${mcFmt.formatted}</strong></div>
+          <div class="dom-stat"><span>North Node</span><strong>${planetsMap.NorthNode.fmt.formatted} (R.${planetsMap.NorthNode.house})</strong></div>
+        </div>
+      `;
+
+      // Populate Aspects Grid
+      document.getElementById("aspectsGrid").innerHTML = aspects.slice(0, 14).map(a => {
+        const tagClass = a.aspect.nature === "harm" ? "tag-harm" : a.aspect.nature === "dyn" ? "tag-dyn" : "tag-conj";
+        return `
+          <div class="aspect-card">
+            <div class="aspect-head">
+              <span class="aspect-pair">${a.b1.glyph} ${a.b1.nameId} ${a.aspect.symbol} ${a.b2.glyph} ${a.b2.nameId}</span>
+              <span class="aspect-tag ${tagClass}">${a.aspect.name} · Orb ${a.orbStr}</span>
+            </div>
+            <div class="aspect-meta">${formatDeg(a.b1.lon).sign.name} ↔ ${formatDeg(a.b2.lon).sign.name}</div>
+            <p class="aspect-desc">${a.aspect.meaning}</p>
+          </div>
+        `;
+      }).join("") || `<p style="color:var(--muted)">Tidak ditemukan aspek mayor dalam batas orb standar.</p>`;
+
+      // Populate 12 Archetypes Grid
+      document.getElementById("archetypeGrid").innerHTML = archetypes.map((arc, i) => `
+        <article class="arch-card ${i < 2 ? 'is-dominant' : ''}">
+          <div>
+            <div class="arch-top">
+              <div>
+                <div class="arch-name">${arc.name}</div>
+                <div class="arch-sub">${arc.sub} · Resonansi ${arc.pct}%</div>
+              </div>
+              <span class="arch-rank">${arc.tier}</span>
+            </div>
+            <p class="arch-body">${arc.core}</p>
+          </div>
+          <div class="arch-foot">
+            <div><strong>Kekuatan Utama:</strong> ${arc.gift}</div>
+            <div style="margin-top:4px;"><strong>Titik Rawan (Shadow):</strong> ${arc.shadow}</div>
+          </div>
+        </article>
+      `).join("");
+
+      // Populate 6 Deep Psychological-Symbolic Synthesis Modules
+      const hardAspects = aspects.filter(a => a.aspect.nature === "dyn").slice(0, 2);
+      const hardText = hardAspects.length
+        ? hardAspects.map(h => `${h.b1.nameId} ${h.aspect.name} ${h.b2.nameId} (Orb ${h.orbStr})`).join(" dan ")
+        : "dinamika antar-elemen dalam peta lahir";
+
+      const venusSign = planetsMap.Venus.fmt.sign;
+      const marsSign = planetsMap.Mars.fmt.sign;
+      const dscSign = formatDeg(norm360(angles.asc + 180)).sign;
+      const saturnSign = planetsMap.Saturn.fmt.sign;
+      const nnSign = planetsMap.NorthNode.fmt.sign;
+      const snSign = planetsMap.SouthNode.fmt.sign;
+
+      document.getElementById("synthesisGrid").innerHTML = `
+        <article class="synth-card">
+          <div>
+            <div class="synth-num">01 · Persona &amp; Identitas Luar</div>
+            <h4>${sunSign.name} Sun · ${ascSign.name} Ascendant</h4>
+            <p>
+              <strong>1. Inti Diri (Matahari):</strong> Berada di <strong>${sunSign.name} (Rumah ${planetsMap.Sun.house})</strong>, menonjolkan karakter yang terarah pada ${sunSign.keyword}.
+            </p>
+            <p>
+              <strong>2. Tampilan Pertama (Ascendant):</strong> Ascendant <strong>${ascSign.name}</strong> membuat Anda cenderung ${ascSign.persona} Perbedaan antara kesan luar dan kebutuhan batin perlu dijaga agar tidak terasa melelahkan.
+            </p>
+            <p>
+              <strong>3. Penguasa Chart:</strong> Diperkuat oleh <strong>${chartRulerObj.nameId}</strong> di <strong>${chartRulerObj.fmt.sign.name} (Rumah ${chartRulerObj.house})</strong>, yang mengaitkan arah diri dengan ranah ${HOUSE_THEMES[chartRulerObj.house - 1].area.toLowerCase()}.
+            </p>
+          </div>
+          <div class="synth-highlight">Pola Utama: ${sunSign.motto} · Penguasa Chart di Rumah ${chartRulerObj.house}.</div>
+        </article>
+
+        <article class="synth-card">
+          <div>
+            <div class="synth-num">02 · Shadow &amp; Lapisan Bawah Sadar</div>
+            <h4>${moonSign.name} Moon · Pluto di ${planetsMap.Pluto.fmt.sign.name}</h4>
+            <p>
+              <strong>1. Kebutuhan Emosional (Bulan):</strong> Bulan di <strong>${moonSign.name} (Rumah ${planetsMap.Moon.house})</strong> menuntut pemenuhan ${moonSign.keyword} sebagai fondasi ketenangan batin.
+            </p>
+            <p>
+              <strong>2. Sisi Bayangan (Shadow):</strong> Di bawah tekanan, kecenderungan yang muncul adalah ${moonSign.shadow} Mengenali pola ini sejak awal mencegah reaksi impulsif atau defensif yang tidak perlu.
+            </p>
+            <p>
+              <strong>3. Transformasi Mendalam:</strong> <strong>Pluto di Rumah ${planetsMap.Pluto.house}</strong> dan <strong>South Node di ${snSign.name}</strong> menyoroti pola lama yang perlu dilepaskan dan diperbarui secara sadar.
+            </p>
+          </div>
+          <div class="synth-highlight">Sisi Rawan: ${moonSign.shadow.charAt(0).toUpperCase() + moonSign.shadow.slice(1)}</div>
+        </article>
+
+        <article class="synth-card">
+          <div>
+            <div class="synth-num">03 · Konflik Internal &amp; Tegangan Aspek</div>
+            <h4>Dinamika ${hardText}</h4>
+            <p>
+              <strong>1. Sumber Gesekan:</strong> Aspek <strong>${hardText}</strong> menunjukkan dua kecenderungan yang saling menarik dan menuntut kompromi nyata, bukan diabaikan.
+            </p>
+            <p>
+              <strong>2. Komposisi Elemen &amp; Modalitas:</strong> Dengan dominasi <strong>${domElement}</strong> dan modalitas <strong>${domModality}</strong>, keseimbangan tercapai ketika kekuatan utama dipadukan dengan fleksibilitas terhadap situasi.
+            </p>
+          </div>
+          <div class="synth-highlight">Fokus Keseimbangan: Mengelola tegangan ${domElement} &amp; ${domModality} secara terukur.</div>
+        </article>
+
+        <article class="synth-card">
+          <div>
+            <div class="synth-num">04 · Relasi &amp; Kemitraan</div>
+            <h4>Descendant ${dscSign.name} · Venus di ${venusSign.name}</h4>
+            <p>
+              <strong>1. Pola Nilai &amp; Daya Tarik:</strong> <strong>Venus di ${venusSign.name} (Rumah ${planetsMap.Venus.house})</strong> menunjukkan cara Anda memaknai kedekatan, harmoni, dan nilai melalui ${venusSign.keyword}.
+            </p>
+            <p>
+              <strong>2. Asertivitas &amp; Cermin Relasi:</strong> <strong>Mars di ${marsSign.name} (Rumah ${planetsMap.Mars.house})</strong> mengatur cara menuntut hak dan menetapkan batas, sementara <strong>Descendant ${dscSign.name}</strong> menyoroti dinamika kemitraan lewat ${dscSign.keyword}.
+            </p>
+          </div>
+          <div class="synth-highlight">Dinamika Relasi: Menyeimbangkan ${venusSign.keyword} dengan batas yang jelas.</div>
+        </article>
+
+        <article class="synth-card">
+          <div>
+            <div class="synth-num">05 · Kepemimpinan &amp; Arah Karya</div>
+            <h4>Midheaven ${mcFmt.sign.name} · Saturnus di ${saturnSign.name}</h4>
+            <p>
+              <strong>1. Orientasi Publik &amp; Peran:</strong> <strong>Midheaven (MC) di ${mcFmt.sign.name}</strong> mengarah pada pencapaian dan reputasi yang terbangun lewat ${mcFmt.sign.keyword}.
+            </p>
+            <p>
+              <strong>2. Disiplin &amp; Tanggung Jawab:</strong> <strong>Saturnus di ${saturnSign.name} (Rumah ${planetsMap.Saturn.house})</strong> membentuk gaya kepemimpinan yang bertumpu pada konsistensi, struktur, dan ketahanan menghadapi proses panjang.
+            </p>
+          </div>
+          <div class="synth-highlight">Gaya Kepemimpinan: Terstruktur, terukur, dan bertumpu pada konsistensi.</div>
+        </article>
+
+        <article class="synth-card">
+          <div>
+            <div class="synth-num">06 · Pengembangan Karakter &amp; Arah Maju</div>
+            <h4>North Node ${nnSign.name} (Rumah ${planetsMap.NorthNode.house})</h4>
+            <p>
+              Pertumbuhan karakter paling efektif diarahkan ke <strong>North Node di ${nnSign.name} (Rumah ${planetsMap.NorthNode.house})</strong>—mengembangkan ${nnSign.keyword} sambil mengurangi ketergantungan berlebih pada pola lama di <strong>South Node ${snSign.name}</strong>.
+            </p>
+            <ul class="synth-list">
+              <li>Evaluasi keputusan besar secara objektif sebelum bertindak.</li>
+              <li>Jaga porsi antara target di Rumah ${planetsMap.Saturn.house} dan pemulihan emosi di Rumah ${planetsMap.Moon.house}.</li>
+              <li>Terapkan satu perbaikan kebiasaan spesifik secara konsisten.</li>
+            </ul>
+          </div>
+          <div class="synth-highlight">Arah Prioritas: Menguatkan kualitas ${nnSign.name} di Rumah ${planetsMap.NorthNode.house}.</div>
+        </article>
+      `;
+
+      const shell = document.getElementById("resultShell");
+      shell.classList.add("visible");
+
+      // Render Name Vibration Analysis (Stage 02)
+      renderNameVibrationSection(nameVibrationData, natalContext);
+
+      statusEl.textContent = "Peta ASTRONOMEN selesai disusun. Mulai baca dari Intisari Kesadaran di bawah ini.";
+      if (shouldScroll) {
+        shell.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+
+    // Initialize default coordinates and render initial chart on load without forcing scroll
+    window.addEventListener("DOMContentLoaded", () => {
+      updateCoordDisplay();
+      handleCalculate(null, false);
+    });
+  </script>
+</body>
+</html>
